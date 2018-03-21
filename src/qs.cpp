@@ -16,33 +16,34 @@ namespace po = boost::program_options;
 
 vector<Point> new_dataset;
 
-void solve(const vector<Point> &dataset,
-           int b1,
-           int b2,
-           const vector<pair<float, float>> &bb,
-           const vector<int> &who,
-           int depth,
-           int max_depth,
-           uint64_t *num_leaves,
-           uint64_t *dfs_size,
-           uint64_t *reduced_dfs_size,
-           uint64_t *num_reduced_edges,
-           int *max_reduced_edge,
-           const Point &cur,
-           int long_edge_length,
+void solve(const vector<Point> &dataset, //initally the complete input dataset
+           int b1, //block start
+           int b2, //block end
+           const vector<pair<float, float>> &bb, //a random point range in the hyper cube
+           const vector<int> &who, //the 'all' vector
+           int depth, //initially 0
+           int max_depth, //does not change
+           uint64_t *num_leaves, //initially 0
+           uint64_t *dfs_size, //initially 0
+           uint64_t *reduced_dfs_size, //initially 0
+           uint64_t *num_reduced_edges, //initially 0
+           int *max_reduced_edge, //initially 0
+           const Point &cur, //initially a Point with all 0's
+           int long_edge_length, //initially 0
            int lambda)
 {
     int n = dataset.size();
-    int d = b2 - b1;
-    int dd = d / 8;
+    int d = b2 - b1; //block length
+    int dd = d / 8; //divide block
     if (d % 8)
         ++dd;
     if (long_edge_length - lambda >= *max_reduced_edge)
     {
         *max_reduced_edge = long_edge_length - lambda;
     }
-    if (depth >= max_depth)
+    if (depth >= max_depth) //We have reached the max depth
     {
+        //Make leaf
         ++(*num_leaves);
         for (auto x : who)
         {
@@ -53,9 +54,10 @@ void solve(const vector<Point> &dataset,
         }
         return;
     }
-    vector<float> mm;
+    vector<float> mm; //Random point
     for (auto x : bb)
     {
+        //Populate mm with random coordinates
         mm.push_back((x.first + x.second) / 2.0);
     }
     map<vector<uint8_t>, vector<int>> parts;
@@ -65,7 +67,7 @@ void solve(const vector<Point> &dataset,
         for (int j = 0; j < d; ++j)
         {
             if (dataset[x][b1 + j] < mm[j])
-            {
+            { //Why empty if-body!?!?
             }
             else
             {
@@ -190,29 +192,31 @@ int main(int argc, char **argv)
             cout << desc << endl;
             throw runtime_error("too many queries");
         }
-        queries.erase(queries.begin() + num_queries, queries.end()); //cut down queries
+        queries.erase(queries.begin() + num_queries, queries.end()); //only use first q queries
     }
     int q = queries.size();
     for (auto x : queries) //auto type is automatically deduced from its initializer
     {
         dataset.push_back(x); //adds at the end
     }
-    int n = dataset.size();
-    int d = dataset[0].size();
-    cout << " " << n << " " << d << endl;
-    float cmin = 1e100;
+    int n = dataset.size(); //number of points
+    int d = dataset[0].size(); //dimensions: the number of coefficients, which is rows()*cols()
+    cout << "Dataset size: " << n << ", point dimensions: " << d << endl;
+    float cmin = 1e100; //123136 in decimal
     float cmax = -1e100;
-    for (int i = 0; i < d; ++i)
+    //find extreme values(min/max point values) for hyper cube
+    for (int i = 0; i < d; ++i) //go through all point dimensions
     {
-        for (int j = 0; j < n; ++j)
+        for (int j = 0; j < n; ++j) //go through all points
         {
             cmin = min(cmin, dataset[j][i]);
             cmax = max(cmax, dataset[j][i]);
         }
     }
-    float delta = cmax - cmin;
+    float delta = cmax - cmin; //delta range/"diameter" of hyper cube
     cmin -= delta;
-    uniform_real_distribution<float> u(0.0, delta);
+    uniform_real_distribution<float> u(0.0, delta); //returns random floating-point between 0.0 and delta
+    //initialize int vector of same length as data set with index identity values
     vector<int> all(n);
     for (int i = 0; i < n; ++i)
     {
@@ -220,24 +224,25 @@ int main(int argc, char **argv)
     }
     int start = 0;
     uint64_t total = 0;
+    //create vector with same lengths as dataset
     new_dataset.resize(n);
     for (int i = 0; i < n; ++i)
     {
-        new_dataset[i].resize(d);
+        new_dataset[i].resize(d); //make space for a Point
     }
     for (int block_id = 0; block_id < num_blocks; ++block_id)
     {
-        int block_len = d / num_blocks;
-        if (block_id < d % num_blocks)
+        int block_len = d / num_blocks; //blocks the dimensions
+        if (block_id < d % num_blocks) 
         {
             ++block_len;
         }
-        cout << start << " " << start + block_len << endl;
-        vector<pair<float, float>> bb;
+        cout << "block start: " << start << ", block end: " << start + block_len << endl;
+        vector<pair<float, float>> bb; //A random point range within delta
         for (int i = 0; i < d; ++i)
         {
-            float s = u(gen);
-            bb.push_back(make_pair(cmin + s, cmax + s));
+            float s = u(gen); //random floating-point between 0.0 and delta
+            bb.push_back(make_pair(cmin + s, cmax + s)); //random coordinate in dimensions i. 0<i<d
         }
         uint64_t num_leaves = 0;
         uint64_t dfs_size = 0;
@@ -245,7 +250,7 @@ int main(int argc, char **argv)
         uint64_t num_reduced_edges = 0;
         int max_reduced_edge = 0;
         solve(dataset, start, start + block_len, bb, all, 0, depth, &num_leaves, &dfs_size, &reduced_dfs_size, &num_reduced_edges, &max_reduced_edge, Point::Zero(block_len), 0, lambda);
-        cout << num_leaves << " " << reduced_dfs_size << " " << num_reduced_edges << " " << max_reduced_edge << endl;
+        cout << "Num leaves: " <<num_leaves << ", dfs size: " << reduced_dfs_size << ", reduced edges: " << num_reduced_edges << ", max reduced edge: " << max_reduced_edge << endl;
         start += block_len;
         total += reduced_dfs_size;
         int t = 0;
@@ -299,7 +304,7 @@ int main(int argc, char **argv)
         }
     }
     cout << endl;
-    cout << (counter + 0.0) / (q + 0.0) << endl;
+    cout << "Counts per query: " << (counter + 0.0) / (q + 0.0) << endl;
     cout << "distortion " << (distortion + 0.0) / (q + 0.0) << endl;
     ofstream output(output_file);
     output << "method qs" << endl;

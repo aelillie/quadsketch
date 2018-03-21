@@ -151,7 +151,7 @@ int main(int argc, char **argv)
     }
     //No errors, save input parameters
     string input_folder = vm["input"].as<string>();
-    string output_file = vm["output"].as<string>();
+    string output_file = "../results/" + vm["output"].as<string>();
     int num_blocks = vm["num_blocks"].as<int>();
     int depth = vm["depth"].as<int>();
     int lambda = vm["lambda"].as<int>();

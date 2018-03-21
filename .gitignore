@@ -403,6 +403,9 @@ datasets/glove/
 datasets/mnist/
 datasets/sift/
 datasets/sift_subsample/
+results/
+.vscode
+qs
 
 
 # End of https://www.gitignore.io/api/c++,linux,macos,windows,visualstudio,visualstudiocode

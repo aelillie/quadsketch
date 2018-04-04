@@ -35,8 +35,8 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
     int n = dataset.size();
     int d = b2 - b1; //block length
     int dd = d / 8; //divide block
-    if (d % 8)
-        ++dd;
+    if (d % 8) //check if there is excess space
+        ++dd; //if so, make space for 1 more byte
     if (long_edge_length - lambda >= *max_reduced_edge)
     {
         *max_reduced_edge = long_edge_length - lambda;
@@ -52,7 +52,7 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
                 new_dataset[x][b1 + i] = cur[i];
             }
         }
-        return;
+        return; //Terminates recursion for 'solve'
     }
     vector<float> mm; //Random point
     for (auto x : bb)
@@ -71,7 +71,7 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
             }
             else
             {
-                code[j / 8] |= 1 << (j % 8);
+                code[j / 8] |= 1 << (j % 8); //bitwise magic
             }
         }
         parts[code].push_back(x);
@@ -100,7 +100,7 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
         (*dfs_size) += 2 + d;
         (*reduced_dfs_size) += 2;
         if (long_edge_length >= lambda && parts.size() == 1)
-        {
+        { //yet another empty if?!?
         }
         else
         {

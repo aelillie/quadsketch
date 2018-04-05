@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
-\usepackage[english, danish]{babel}
+\usepackage[english]{babel}
 \usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
 \usepackage[table]{xcolor}
@@ -8,7 +8,7 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{pdfpages}
-%\usepackage[nottoc,numbib]{tocbibind} 
+\usepackage[nottoc,numbib]{tocbibind} 
 
 %Commands
 \newcommand{\source}[1]{\caption*{Source: {#1}} }
@@ -30,13 +30,13 @@
 	{ \huge \bfseries QuadSketch}\\[0.4cm] % Title of document
 	\HRule \\[1.5cm]
 	
-	\begin{minipage}{0.4\textwidth}
+	\begin{minipage}{0.5\textwidth}
 		\begin{flushleft} \large
 			\emph{Authors:}\\
 			Anders Edelbo \textsc{Lillie} \\
-			Emil Refsgård \textsc{Middelboe} \\
+			Emil Refsgaard \textsc{Middelboe} \\
 			Fredrik Emil \textsc{Bakke} \\
-			Stefan Bjórn \textsc{Petúrsson}
+			Stefán Björn \textsc{Pétursson}
 		\end{flushleft}
 	\end{minipage}
 	~
@@ -65,18 +65,18 @@
 	
 %sections
 
-%\input{sections/title1.tex}
+\input{sections/introduction.tex}
 %\input{sections/title2.tex}
-%\clearpage
+\clearpage
 
 %bibliography
 
-%\bibliographystyle{apalike}
-%\bibliography{bibliography/articles} 
-%\clearpage
+\bibliographystyle{apalike}
+\bibliography{bibliography/articles} 
+\clearpage
 
-%\appendix
-
-%\input{appendix/title1.tex}
+%appendix
+\appendix
+\input{appendix/a.tex}
 	
 \end{document}

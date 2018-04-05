@@ -1,0 +1,82 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english, danish]{babel}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{color}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pdfpages}
+%\usepackage[nottoc,numbib]{tocbibind} 
+
+%Commands
+\newcommand{\source}[1]{\caption*{Source: {#1}} }
+
+\begin{document}
+\pagenumbering{gobble} %remove page numbering
+%\includepdf[pages=-]{frontpage.pdf}
+\begin{titlepage}
+	
+	\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+	
+	\center % Center everything on the page
+	
+	\textsc{\LARGE IT University of Copenhagen}\\[1.5cm] % Name of univerEFsity
+	\textsc{\Large Software Development BSc}\\[0.5cm] % Major heading
+	\textsc{\large Algorithm Design Project}\\[0.5cm] % Minor heading
+	
+	\HRule \\[0.4cm]
+	{ \huge \bfseries QuadSketch}\\[0.4cm] % Title of document
+	\HRule \\[1.5cm]
+	
+	\begin{minipage}{0.4\textwidth}
+		\begin{flushleft} \large
+			\emph{Authors:}\\
+			Anders Edelbo \textsc{Lillie} \\
+			Emil Refsgård \textsc{Middelboe} \\
+			Fredrik Emil \textsc{Bakke} \\
+			Stefan Bjórn \textsc{Petúrsson}
+		\end{flushleft}
+	\end{minipage}
+	~
+	\begin{minipage}{0.4\textwidth}
+		\begin{flushright} \large
+			\emph{Supervisor:} \\
+			Samuel \textsc{McCauley} \\
+			Johan von Tangen \textsc{Sivertsen}
+		\end{flushright}
+	\end{minipage}\\[4cm]
+	
+	{\large \today}\\[3cm] 
+	
+	\vfill % Fill the rest of the page with whitespace
+	
+\end{titlepage}
+
+\begin{abstract}
+	%Write abstract here
+\end{abstract}
+\clearpage
+
+\tableofcontents
+\clearpage
+\pagenumbering{arabic} %reset page numbering
+	
+%sections
+
+%\input{sections/title1.tex}
+%\input{sections/title2.tex}
+%\clearpage
+
+%bibliography
+
+%\bibliographystyle{apalike}
+%\bibliography{bibliography/articles} 
+%\clearpage
+
+%\appendix
+
+%\input{appendix/title1.tex}
+	
+\end{document}

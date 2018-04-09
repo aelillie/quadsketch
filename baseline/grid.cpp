@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
         ("help,h", "print usage message")
         ("input,i", po::value<string>(), "input dataset")
         ("output,o", po::value<string>(), "output file")
-        ("landmarks,l", po::value<int>(), "landmarks")
+        ("landmarks,l", po::value<int>(), "landmarks");
     po::variables_map vm; //variables map derived from std::map<std::string, variable_value>
     //cause vm to contain all the options found on the command line
     po::store(po::parse_command_line(argc, argv, desc), vm);

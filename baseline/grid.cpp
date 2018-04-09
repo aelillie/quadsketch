@@ -52,6 +52,7 @@ int main(int argc, char **argv) {
     }
 
     //Populate data vectors
+    vector<Point> dataset;
     deserialize(input_folder + "/dataset.dat", &dataset); //Input data
     int n = dataset.size(); //number of points
     int d = dataset[0].size(); //dimensions: the number of coefficients, which is rows()*cols()

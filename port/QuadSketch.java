@@ -1,5 +1,13 @@
 public class QuadSketch {
+
+    // public static void run() {
+
+    // }
+
     public static void main(String[] args) {
-        System.out.println("QuadSketch!");
+        //1. Parse arguments
+        //2. Populate data
+        //3. Run algorithm
+        //4. Output statistics
     }
 }

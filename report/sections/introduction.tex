@@ -1,8 +1,10 @@
 \section{Introduction}
 \label{introduction}
 %Formal introduction goes here
-
-\subsection{Motivation} %Why are we interested in this?
+Compression algorithms for approximate nearest neighbor search is a well studied field and many papers have been published on the area. We will study one paper in particular, where the key idea is to make use of a multi-dimensional indexing method known as hyperoctrees \footnote{These are referred to as \qt{}'s in the paper} and apply pruning to reduce the size of the resulting sketch. The result of the paper is an algorithm known named \qs{}. Alongside with the paper the authors released an implementation of the algorithm, which is publicly available on Github\footnote{https://www.Github.com}.
+\\
+\\
+The paper introduces several experiments demonstrating the efficiency of \qs{}. The authors have tested \qs{} along side with two other approximate nearest neighbor algorithms, \texttt{Product Quantization} referred to as \pq{} and scalar uniform quantization implementation referred to as \gr{}.\subsection{Motivation} %Why are we interested in this?
 
 \subsection{Case} %What is the QuadSketch paper about?
 

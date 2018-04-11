@@ -12,6 +12,10 @@
 
 %Commands
 \newcommand{\source}[1]{\caption*{Source: {#1}} }
+\newcommand{\qs}{\texttt{QuadSketch}}
+\newcommand{\qt}{\textit{Quad Tree}}
+\newcommand{\tm}[1]{\textit{Theorem {#1}}}
+\newcommand{\pq}{\texttt{PQ}}
 
 \begin{document}
 \pagenumbering{gobble} %remove page numbering
@@ -23,7 +27,7 @@
 	\center % Center everything on the page
 	
 	\textsc{\LARGE IT University of Copenhagen}\\[1.5cm] % Name of univerEFsity
-	\textsc{\Large Software Development BSc}\\[0.5cm] % Major heading
+	\textsc{\Large Software Development MSc}\\[0.5cm] % Major heading
 	\textsc{\large Algorithm Design Project}\\[0.5cm] % Minor heading
 	
 	\HRule \\[0.4cm]
@@ -42,7 +46,7 @@
 	~
 	\begin{minipage}{0.4\textwidth}
 		\begin{flushright} \large
-			\emph{Supervisor:} \\
+			\emph{Supervisors:} \\
 			Samuel \textsc{McCauley} \\
 			Johan von Tangen \textsc{Sivertsen}
 		\end{flushright}
@@ -56,6 +60,7 @@
 
 \begin{abstract}
 	%Write abstract here
+	\nocite{wagner17}
 \end{abstract}
 \clearpage
 
@@ -66,15 +71,21 @@
 %sections
 \input{sections/abstract.tex}
 \input{sections/introduction.tex}
+\input{sections/contribution.tex}
+\input{sections/background.tex}
+\input{sections/analysis.tex}
+\input{sections/methods.tex}
+\input{sections/results.tex}
+\input{sections/discussion.tex}
+\input{sections/conclusion.tex}
 
 
 %\input{sections/title2.tex}
 \clearpage
 
 %bibliography
-
 \bibliographystyle{apalike}
-\bibliography{bibliography/articles} 
+\bibliography{bibliography/references} 
 \clearpage
 
 %appendix

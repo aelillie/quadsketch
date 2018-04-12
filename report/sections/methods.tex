@@ -2,9 +2,21 @@
 \label{methods}
 %From ILO:
 %"Plan and carry out a small-scale investigation of an algorithmic research problem. This investigation could be theoretical, experimental, or both."
+This section will cover which methods have been used throughout the project and why the methods have been chosen. Each method is motivated to support the problem definition and the analysis of the \qs{} implementation. 
 
 \subsection{Experiment verification}
+
 \subsubsection{Baseline comparison}
 The paper compares the \qs{} performance with other compression algorithms, including \textit{Product Quantization} (\pq{}) and a simple baseline algorithm they call Grid. In order to verify their results, a version of Grid has been implemented as baseline to use for replication experiments. The basic concept is as follows… And is implemented as follows...
 
 \subsubsection{Other datasets}
+To ensure proper verification of the results for the \qs{}, the implementation and baseline must be tested on another dataset not included in the paper. If the results from another dataset somewhat match the results given in the paper \cite{wagner17}, it will strengthen the credibility of the practical efficiency of the \qs{} implementation.
+\\
+\\
+The choice of other datasets could provide some additional insight into how the properties of some dataset might impact the optimality of the parameters given to the \qs{}. It might be interesting to feed datasets with different properties to the \qs{}, as results may change from very sparse / spread out datasets to very dense datasets.
+
+\subsection{New Experiments}
+
+\subsubsection{Random bits}
+
+

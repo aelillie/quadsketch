@@ -10,7 +10,7 @@ Compression algorithms for approximate nearest neighbor is a well studied field 
 This paper will verify and attempt to improve the results of such an algorithm. 
 %TODO: Uddyb med hvorfor det er interessant og hvorfor vi kan vil verificere og improve algorithm?
 \subsection{Case} %What is the QuadSketch paper about?
-The report studies the paper, \cite{wagner17}, which introduces a distance preserving compression scheme. The key idea is to reduce the number of dimensions \textit{D} by using the Johnson-Lindenstrauss lemma and then make use of a multi-dimensional indexing method known as \textit{hyperoctrees}\footnote{These are referred to as \qt{}'s in the paper} and apply pruning to reduce the size of the resulting sketch. The result of the paper is an algorithm named \qs{}, which represents each point in a Euclidean space using only \bo{d*log(dB/$\epsilon$) + log(n)} where \textit{d} is the result of reducing the number of dimensions \textit{D} of a point set by \bo{$\epsilon^{-2}$ log n}, \textit{n} is the number of points in the point set, and \textit{B} is the number of bits of precision in the coordinates. Alongside with the paper the authors released an implementation of the algorithm, which is publicly available on Github\footnote{\url{https://github.com/talwagner/quadsketch/blob/master/src/qs.cpp}}. 
+The report studies the paper, \cite{wagner17}, which introduces a distance preserving compression scheme. The key idea is to reduce the number of dimensions \textit{D} by using the Johnson-Lindenstrauss lemma and then make use of a multi-dimensional indexing method known as \textit{hyperoctrees}\footnote{These are referred to as \qt{}'s in the paper} and apply pruning to reduce the size of the resulting sketch. The result of the paper is an algorithm named \qs{}, which represents each point in a Euclidean space using only \bo{d*$\log$(dB/$\epsilon$) + $\log$(n)} where \textit{d} is the result of reducing the number of dimensions \textit{D} of a point set by \bo{$\epsilon^{-2} \log$ n}, \textit{n} is the number of points in the point set, and \textit{B} is the number of bits of precision in the coordinates. Alongside with the paper the authors released an implementation of the algorithm, which is publicly available on Github\footnote{\url{https://github.com/talwagner/quadsketch/blob/master/src/qs.cpp}}. 
 \\
 \\
 The paper introduces several experiments demonstrating the efficiency of the algorithm \qs{}. The authors have tested \qs{} along side with two other distance preserving compression algorithms, \texttt{Product Quantization} referred to as \pq{} and a scalar uniform quantization implementation referred to as \gr{}. These results demonstrate that \qs{} performs well compared to the two other algorithms, even outperforming \pq{} on some of the datasets. 
@@ -20,9 +20,9 @@ There are two main parameters controlling the performance of \qs{}. The first on
 \subsection{Problem definition} %What is our research question?
 %From ILO:
 %"Plan and carry out a small-scale investigation of an algorithmic research problem. This investigation could be theoretical, experimental, or both."
-\cite{wagner17} introduces the \qs{} algorithm, which competes with state of the art distance preserving compression algorithms. This paper investigates the performance complexity of \qs{} in terms of the parameters \textit{L} and $\Lambda$ and tries to introduce heuristics for improving or reducing their influence on the complexity. From \tm{1} they are defined as such: \\
+\cite{wagner17} introduces the \qs{} algorithm, which competes with state of the art distance preserving compression algorithms. This paper investigates the performance complexity of \qs{} in terms of the parameters \textit{L} and $\Lambda$ and tries to introduce heuristics for improving or reducing their influence on the complexity. From \tm{2} they are defined as such: \\
 
-$\Lambda$=\bo{$log(d log\Phi/\epsilon\delta)$}\\
+$\Lambda$=\bo{$log(d\;\log\Phi/\epsilon)$}\\
 
 \ensuremath{L=\log \Phi + \Lambda}
 

@@ -1,9 +1,18 @@
 \section{Background}
 \label{background}
+
+\subsection{Research area}
+\label{research_area}
 %What is the research area?
-%What is decompression good for?
-%Why do we need it?
-%State of the art?
+Many applications use algorithms to find distances between data points in a (typically large) data set in order to extract knowledge based on this. One example is doing similarity search, or more specifically nearest-neighbor (NN) search, on pictures to recognize letters or numbers. As useful as this is, it still depends on the given data, which are getting increasingly big in size. This is a general problem as even modern machines are not able to process \textit{gigantic} files all at once(i.e. keeping all the data in main memory). Thus another big subject in computer science arises, that is compressing the data in order to fit in memory while trying to preserve as much information from the data as possible. This research area is what \qs{} deals with, and in particular for high-dimensional data sets.
+
+Naturally one must pay to compress something, which happens in terms of accuracy, i.e. representing the data using only approximations. This also means that there is a trade off between compression (that is decreased data size) and accuracy for the algorithms in this area. That is why compression algorithms usually are measured on these parameters, i.e. accuracy per compression size.
+
+\subsection{State of the art}
+\label{state_of_the_art}
+Several state of the art algorithm exists for the research area introduced in section \ref{research_area} above. \cite{wagner17} talks about \textit{Product Quantization} (\pq{}), which they use as reference state of the art algorithm in their experiments. The \pq{} concept is stated in its original paper, \cite{schmid9}, as such "The idea is to decomposes the space into a Cartesian product of low dimensional subspaces and to quantize each subspace separately", where the term \textit{quantize} refers to the process of constraining an input from a continuous set of values to a discrete set\footnote{E.g. real numbers to integers. See https://en.wikipedia.org/wiki/Quantization 11-04-2018}.
+
+Well known general algorithms and data structures exists for the same purpose, such as \textit{k-means} and \textit{kd-trees}, where the former is a clustering algorithm and the latter is a adaptive data structure for spatial data set. This is also discussed in \cite{schmid9}, where it is noted that apparently a pure brute-force algorithm outperforms these in practice for high-dimensional data. Further algorithms listed in this paper include "Euclidean Locality-Sensitive Hashing" (LSH), "spectral hashing", "Hamming embedding", and "FLANN". These will not be investigated further, but is only mentioned for reference.
 
 %From ILO:
 %"Identify and formulate precisely (if possible) the algorithmic problem hidden in a given programming task."

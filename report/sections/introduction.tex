@@ -7,6 +7,9 @@ researchers proposed approximation algorithms for the problem.\cite{ilya15}
 \\
 \\
 Approximation algorithms often work on compact distance-preserving representations, and these are usually divided into two categories: data-oblivious and data-dependent. The former attempts to achieve guarentees for any data set while the latter attempts to use the extra information about the particular data sets in order to design functions with better performance. Compressed representations makes computation for data analysis algorithms more efficient, which is very desirable in many fields, such as data mining and machine learning.\cite{stan15}
+\\
+\\
+This paper will verify and attempt to improve the results of such an algorithm. 
 \subsection{Case} %What is the QuadSketch paper about?
 We will study one paper in particular, where the key idea is to reduce the number of dimensions \textit{D} by using the Johnson-Lindenstrauss lemma and then make use of a multi-dimensional indexing method known as hyperoctrees\footnote{These are referred to as \qt{}'s in the paper} and apply pruning to reduce the size of the resulting sketch. The result of the paper is an algorithm named \qs{}, which represents each point in a Euclidaen space using only \bo{d*log(dB/$\epsilon$) + log(n)} where \textit{d} is the result of reduing the number of dimensions \textit{D} of a pointset by \bo{$\epsilon^{-2}$ log n} and \textit{B} is the number of bits of precision. Alongside with the paper the authors released an implementation of the algorithm, which is publicly available on Github\footnote{https://github.com/talwagner/quadsketch/blob/master/src/qs.cpp}. 
 \\

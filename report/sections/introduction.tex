@@ -1,23 +1,28 @@
 \section{Introduction}
 \label{introduction}
 %Formal introduction goes here
+\textit{Formal introduction goes here}
+
 \subsection{Motivation} %Why are we interested in this?
-Compression algorithms for approximate nearest neighbor is a well studied field and many papers have been published on the area. The need for compression arises as many nearest neighbor algorithm suffer from \textit{"the curse of dimensionality"} phenomenon; either space or query time are exponential in the dimension \textit{D}. To escape this curse,
-researchers proposed approximation algorithms for the problem.\cite{ilya15} 
-\\
-\\
-Approximation algorithms often work on compact distance-preserving representations, and these are usually divided into two categories: data-oblivious and data-dependent. The former attempts to achieve guarentees for any data set while the latter attempts to use the extra information about the particular data sets in order to design functions with better performance. Compressed representations makes computation for data analysis algorithms more efficient, which is very desirable in many fields, such as data mining and machine learning.\cite{stan15}
+Compression algorithms for approximate nearest neighbor is a well studied field and many papers have been published on the area. The need for compression arises as many nearest neighbor algorithm suffer from \textit{"the curse of dimensionality"} phenomenon; either space or query time are exponential in the dimension \textit{D}\cite{ilya15}. %To escape this curse, researchers proposed approximation algorithms for the problem.
 \\
 \\
 This paper will verify and attempt to improve the results of such an algorithm. 
+%TODO: Uddyb med hvorfor det er interessant og hvorfor vi kan vil verificere og improve algorithm?
 \subsection{Case} %What is the QuadSketch paper about?
-We will study one paper in particular, where the key idea is to reduce the number of dimensions \textit{D} by using the Johnson-Lindenstrauss lemma and then make use of a multi-dimensional indexing method known as hyperoctrees\footnote{These are referred to as \qt{}'s in the paper} and apply pruning to reduce the size of the resulting sketch. The result of the paper is an algorithm named \qs{}, which represents each point in a Euclidaen space using only \bo{d*log(dB/$\epsilon$) + log(n)} where \textit{d} is the result of reduing the number of dimensions \textit{D} of a pointset by \bo{$\epsilon^{-2}$ log n} and \textit{B} is the number of bits of precision. Alongside with the paper the authors released an implementation of the algorithm, which is publicly available on Github\footnote{https://github.com/talwagner/quadsketch/blob/master/src/qs.cpp}. 
+The report studies the paper, \cite{wagner17}, which introduces a distance preserving compression scheme. The key idea is to reduce the number of dimensions \textit{D} by using the Johnson-Lindenstrauss lemma and then make use of a multi-dimensional indexing method known as \textit{hyperoctrees}\footnote{These are referred to as \qt{}'s in the paper} and apply pruning to reduce the size of the resulting sketch. The result of the paper is an algorithm named \qs{}, which represents each point in a Euclidean space using only \bo{d*log(dB/$\epsilon$) + log(n)} where \textit{d} is the result of reducing the number of dimensions \textit{D} of a point set by \bo{$\epsilon^{-2}$ log n}, \textit{n} is the number of points in the point set, and \textit{B} is the number of bits of precision in the coordinates. Alongside with the paper the authors released an implementation of the algorithm, which is publicly available on Github\footnote{\url{https://github.com/talwagner/quadsketch/blob/master/src/qs.cpp}}. 
 \\
 \\
 The paper introduces several experiments demonstrating the efficiency of the algorithm \qs{}. The authors have tested \qs{} along side with two other distance preserving compression algorithms, \texttt{Product Quantization} referred to as \pq{} and a scalar uniform quantization implementation referred to as \gr{}. These results demonstrate that \qs{} performs well compared to the two other algorithms, even outperforming \pq{} on some of the datasets. 
 \\
 \\
-There are two main parameters controlling the performance of \qs{}. The first one of these is named \textit{L}, and this parameter controls the maximum depth of the quadtree. The second parameter is named $\Lambda$ and this parameter control the depth of the tree before pruning is allowed. The effect these parameters have on the accuracy and average distortion of the algorithm are visible in the paper. These parameters are provided by the user and therefore could reduce the performance of the algorithm if the user is unaware of any optimal values.
+There are two main parameters controlling the performance of \qs{}. The first one of these is named \textit{L}, and this parameter controls the maximum depth of the \qt{}. The second parameter is named $\Lambda$ and this parameter controls the degree of pruning. The effect these parameters have on the accuracy and average distortion of the algorithm are visible in the paper. These parameters are provided by the user and therefore could reduce the performance of the algorithm if the user is unaware of any optimal values.
 \subsection{Problem definition} %What is our research question?
 %From ILO:
 %"Plan and carry out a small-scale investigation of an algorithmic research problem. This investigation could be theoretical, experimental, or both."
+\cite{wagner17} introduces the \qs{} algorithm, which competes with state of the art distance preserving compression algorithms. This paper investigates the performance complexity of \qs{} in terms of the parameters \textit{L} and $\Lambda$ and tries to introduce heuristics for improving or reducing their influence on the complexity. From \tm{1} they are defined as such: \\
+
+$\Lambda$=\bo{$log(d log\Phi/\epsilon\delta)$}\\
+
+\ensuremath{L=\log \Phi + \Lambda}
+

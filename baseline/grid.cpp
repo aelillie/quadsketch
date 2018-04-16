@@ -18,7 +18,7 @@ namespace po = boost::program_options;
 
 vector<Point> new_dataset;
 
-void grid(const vector<Point> &dataset, int dim, int landmarks) {
+float grid(const vector<Point> &dataset, int dim, int landmarks) {
 	int n = dataset.size();
 	float cmin = 1e100, cmax = -1e100;
 	//Find smallest and biggest value in this dimension
@@ -28,6 +28,7 @@ void grid(const vector<Point> &dataset, int dim, int landmarks) {
 		cmax = max(cmax, dataset[i][dim]);
 	}
 	float delta = cmax - cmin; //range for this dimension
+    //cout << delta << endl;
 	Point marks(landmarks); //Placeholder for landmark coordinates
 	float mark = cmin, space = delta / landmarks;
 	//Create a vector of landmark coordinates
@@ -48,6 +49,7 @@ void grid(const vector<Point> &dataset, int dim, int landmarks) {
 		}
 		new_dataset[i][dim] = landmark;
 	}
+    return delta;
 }
 
 //Use this function to compare results and output
@@ -123,7 +125,7 @@ int main(int argc, char **argv) {
         cout << desc << endl;
         return 0;
     }
-    if (!vm.count("input") || !vm.count("output") || !vm.count("landmarks") || !vm.count("num_queries"))
+    if (!vm.count("input") || !vm.count("output") || !vm.count("landmarks"))
     {
         cout << desc << endl;
         throw runtime_error("input dataset, output file, number of landmarks, "
@@ -163,28 +165,18 @@ int main(int argc, char **argv) {
     int n = dataset.size(); //number of points
     int d = dataset[0].size(); //dimensions: the number of coefficients, which is rows()*cols()
     cout << "Dataset size: " << n << ", point dimensions: " << d << endl;
-    // float cmin = 1e100; //123136 in decimal
-    // float cmax = -1e100;
-    // //find extreme values(min/max point values) for hyper cube
-    // for (int i = 0; i < d; ++i) //go through all point dimensions
-    // {
-    //     for (int j = 0; j < n; ++j) //go through all points
-    //     {
-    //         cmin = min(cmin, dataset[j][i]);
-    //         cmax = max(cmax, dataset[j][i]);
-    //     }
-    // }
-    // float delta = cmax - cmin; //delta range/"diameter" of hyper cube
 	//create vector with same lengths as dataset
 	new_dataset.resize(n);
 	for (int i = 0; i < n; ++i)
 	{
 		new_dataset[i].resize(d); //make space for a Point
 	}
-	
+	float delta = 0;
 	for (int dim = 0; dim < d; ++dim) {
-		grid(dataset, dim, landmarks);
+		delta += grid(dataset, dim, landmarks);
 	}
-     compare(output_file, input_folder, landmarks, dataset, queries, answers);
+    delta /= d;
+    cout << "Average dimension range: " << delta << endl;
+    compare(output_file, input_folder, landmarks, dataset, queries, answers);
     return 0;
 }

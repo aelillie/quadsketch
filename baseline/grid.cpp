@@ -39,11 +39,11 @@ void grid(const vector<Point> &dataset, int dim, int landmarks) {
 	for (int i = 0; i < n; ++i) {
 		float dist_min = numeric_limits<float>::infinity();;
 		float landmark = 0;
-		for (float m : marks) {
-			float dist = fabs(dataset[i][dim] - m);
+		for (int m = 0; m<landmarks; ++m) {
+			float dist = fabs(dataset[i][dim] - marks[m]);
 			if (dist < dist_min) {
 				dist_min = dist;
-				landmark = m;
+				landmark = marks[m];
 			}
 		}
 		new_dataset[i][dim] = landmark;
@@ -59,10 +59,10 @@ void grid(const vector<Point> &dataset, int dim, int landmarks) {
              const vector<vector<uint32_t>> answers) {
 	 int counter = 0;
 	 double distortion = 0.0;
-	 int q queries.size(), n = dataset.size();
+	 int q = queries.size(), n = dataset.size();
 	 for (int i = 0; i < q; ++i) {
 		 float best_score = 1e100;
-		 int who = -1;
+		 uint32_t who = -1;
 		 for (int j = 0; j < n - q; ++j) {
 			 float score = (new_dataset[j] - new_dataset[n - q + i]).squaredNorm();
 			 if (score < best_score) {
@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
         ("input,i", po::value<string>(), "input dataset")
         ("output,o", po::value<string>(), "output file")
         ("landmarks,l", po::value<int>(), "landmarks")
-        ("num_queries,q", po::value<int>(), "number of queries used for evaluation");
+        ("num_queries,q", po::value<size_t>(), "number of queries used for evaluation");
     po::variables_map vm; //variables map derived from std::map<std::string, variable_value>
     //cause vm to contain all the options found on the command line
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -148,7 +148,7 @@ int main(int argc, char **argv) {
     deserialize(input_folder + "/answers.dat", &answers); //Comparison data
     if (vm.count("num_queries"))
     {
-        int num_queries = vm["num_queries"].as<int>();
+        size_t num_queries = vm["num_queries"].as<size_t>();
         if (num_queries > queries.size())
         {
             cout << desc << endl;
@@ -156,7 +156,6 @@ int main(int argc, char **argv) {
         }
         queries.erase(queries.begin() + num_queries, queries.end()); //only use first q queries
     }
-    int q = queries.size();
     for (auto x : queries) //auto type is automatically deduced from its initializer
     {
         dataset.push_back(x); //adds at the end
@@ -164,18 +163,18 @@ int main(int argc, char **argv) {
     int n = dataset.size(); //number of points
     int d = dataset[0].size(); //dimensions: the number of coefficients, which is rows()*cols()
     cout << "Dataset size: " << n << ", point dimensions: " << d << endl;
-    float cmin = 1e100; //123136 in decimal
-    float cmax = -1e100;
-    //find extreme values(min/max point values) for hyper cube
-    for (int i = 0; i < d; ++i) //go through all point dimensions
-    {
-        for (int j = 0; j < n; ++j) //go through all points
-        {
-            cmin = min(cmin, dataset[j][i]);
-            cmax = max(cmax, dataset[j][i]);
-        }
-    }
-    float delta = cmax - cmin; //delta range/"diameter" of hyper cube
+    // float cmin = 1e100; //123136 in decimal
+    // float cmax = -1e100;
+    // //find extreme values(min/max point values) for hyper cube
+    // for (int i = 0; i < d; ++i) //go through all point dimensions
+    // {
+    //     for (int j = 0; j < n; ++j) //go through all points
+    //     {
+    //         cmin = min(cmin, dataset[j][i]);
+    //         cmax = max(cmax, dataset[j][i]);
+    //     }
+    // }
+    // float delta = cmax - cmin; //delta range/"diameter" of hyper cube
 	//create vector with same lengths as dataset
 	new_dataset.resize(n);
 	for (int i = 0; i < n; ++i)
@@ -184,7 +183,7 @@ int main(int argc, char **argv) {
 	}
 	
 	for (int dim = 0; dim < d; ++dim) {
-		grid(dataset, dim, cmin, cmax, delta, landmarks);
+		grid(dataset, dim, landmarks);
 	}
      compare(output_file, input_folder, landmarks, dataset, queries, answers);
     return 0;

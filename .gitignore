@@ -403,7 +403,11 @@ datasets/glove/
 datasets/mnist/
 datasets/sift/
 datasets/sift_subsample/
-results/
+datasets/glove.tar.gz
+datasets/mnist.tar.gz
+datasets/sift.tar.gz
+datasets/sift_subsample.tar.gz
+#results/
 .vscode
 qs
 

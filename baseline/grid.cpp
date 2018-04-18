@@ -39,15 +39,15 @@ float grid(const vector<Point> &dataset, int dim, int landmarks) {
 	//Round off all points in this dimension to nearest landmark
 	for (int i = 0; i < n; ++i) {
 		float dist_min = numeric_limits<float>::infinity();;
-		float landmark = 0;
+		int landmark = -1;
 		for (int m = 0; m<landmarks; ++m) {
 			float dist = fabs(dataset[i][dim] - marks[m]);
 			if (dist < dist_min) {
 				dist_min = dist;
-				landmark = marks[m];
+				landmark = m;
 			}
 		}
-		new_dataset[i][dim] = landmark;
+		new_dataset[i][dim] = marks[landmark];
 	}
     return delta;
 }

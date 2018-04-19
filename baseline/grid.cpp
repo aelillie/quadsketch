@@ -18,7 +18,7 @@ namespace po = boost::program_options;
 
 vector<Point> new_dataset;
 
-float grid(const vector<Point> &dataset, int dim, int landmarks) {
+float grid(const vector<Point> &dataset, int dim, int landmarks, int *marks) {
 	int n = dataset.size();
 	float cmin = 1e100, cmax = -1e100;
 	//Find smallest and biggest value in this dimension
@@ -29,25 +29,25 @@ float grid(const vector<Point> &dataset, int dim, int landmarks) {
 	}
 	float delta = cmax - cmin; //range for this dimension
     //cout << delta << endl;
-	Point marks(landmarks); //Placeholder for landmark coordinates
+	float landmark_coords[landmarks]; //Placeholder for landmark coordinates
 	float mark = cmin, space = delta / landmarks;
 	//Create a vector of landmark coordinates
 	for (int l = 0; l < landmarks; ++l) {
-		marks[l] = mark;
+		landmark_coords[l] = mark;
 		mark += space;
 	}
 	//Round off all points in this dimension to nearest landmark
 	for (int i = 0; i < n; ++i) {
 		float dist_min = numeric_limits<float>::infinity();;
 		int landmark = -1;
-		for (int m = 0; m<landmarks; ++m) {
-			float dist = fabs(dataset[i][dim] - marks[m]);
+		for (int mark = 0; mark<landmarks; ++mark) {
+			float dist = fabs(dataset[i][dim] - landmark_coords[mark]);
 			if (dist < dist_min) {
 				dist_min = dist;
-				landmark = m;
+				landmark = mark;
 			}
 		}
-		new_dataset[i][dim] = marks[landmark];
+		new_dataset[i][dim] = marks[landmark]; //TODO: Pointer or just int?
 	}
     return delta;
 }
@@ -63,29 +63,44 @@ float grid(const vector<Point> &dataset, int dim, int landmarks) {
 	 double distortion = 0.0;
 	 int q = queries.size(), n = dataset.size();
 	 for (int i = 0; i < q; ++i) {
+         /* Find the index of the compressed point
+         that is closest to the compressed query point
+         in euclidean distance */
 		 float best_score = 1e100;
 		 uint32_t who = -1;
 		 for (int j = 0; j < n - q; ++j) {
+             /* Find distance between the int vectors,
+             that is the landmarks for data point j,
+             and query point i.
+             Note that the compressed query points are 
+             stored in the same vector as the compressed
+             data points */
 			 float score = (new_dataset[j] - new_dataset[n - q + i]).squaredNorm();
 			 if (score < best_score) {
 				 best_score = score;
 				 who = j;
 			 }
 		 }
+        /* Check if the query point is actually already in 
+        the original dataset, within some delta precision
+        answers[i][0] is the true nearest neighbor, while
+        answers[i][1...K] are the K nearest neighbors(sorted) */
 		 float dd = (dataset[answers[i][0]] - queries[i]).norm();
 		 if (dd < 1e-3) {
-			 distortion += 1.0;
-			 ++counter;
-			 cout << "+" << flush;
+			 distortion += 1.0; //No distortion, as it is the same
+			 ++counter; //Perfect accuracy
+			 cout << "=" << flush;
 		 }
-		 else {
+         /*otherwise, we check if the compressed nearest neighbor
+         is the true nearest neighbor */
+		 else { 
 			 distortion += (dataset[who] - queries[i]).norm() / (dataset[answers[i][0]] - queries[i]).norm();
-			 if (who == answers[i][0])
+			 if (who == answers[i][0]) //The indices match, this it is a hit
 			 {
 				 ++counter;
 				 cout << "+" << flush;
 			 }
-			 else
+			 else //The compressed NN was incorrect
 			 {
 				 cout << "-" << flush;
 			 }
@@ -171,11 +186,15 @@ int main(int argc, char **argv) {
 	{
 		new_dataset[i].resize(d); //make space for a Point
 	}
-	float delta = 0;
+    int marks[landmarks];
+    for(int mark = 0; mark<landmarks; ++mark) {
+        marks[mark] = mark;
+    }
+	float delta = 0; //Represents a dimension range
 	for (int dim = 0; dim < d; ++dim) {
-		delta += grid(dataset, dim, landmarks);
+		delta += grid(dataset, dim, landmarks, marks);
 	}
-    delta /= d;
+    delta /= d; //Average dimension range. Just for tesing.
     cout << "Average dimension range: " << delta << endl;
     compare(output_file, input_folder, landmarks, dataset, queries, answers);
     return 0;

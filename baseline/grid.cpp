@@ -5,6 +5,7 @@
 #include <chrono>
 #include <fstream>
 #include <map>
+#include <set>
 #include <iostream>
 #include <random>
 #include <vector>
@@ -18,7 +19,7 @@ namespace po = boost::program_options;
 
 vector<Point> new_dataset;
 
-float grid(const vector<Point> &dataset, int dim, int landmarks, const vector<uint16_t> &marks) {
+int grid(const vector<Point> &dataset, int dim, int landmarks, const vector<uint16_t> &marks) {
 	int n = dataset.size();
 	float cmin = 1e100, cmax = -1e100;
 	//Find smallest and biggest value in this dimension
@@ -37,6 +38,7 @@ float grid(const vector<Point> &dataset, int dim, int landmarks, const vector<ui
 		mark += space;
 	}
 	//Round off all points in this dimension to nearest landmark
+    set<uint16_t> count;
 	for (int i = 0; i < n; ++i) {
 		float dist_min = numeric_limits<float>::infinity();;
 		int landmark = -1;
@@ -48,9 +50,10 @@ float grid(const vector<Point> &dataset, int dim, int landmarks, const vector<ui
 				landmark = mark;
 			}
 		}
+        count.insert(marks.at(landmark));
 		new_dataset[i][dim] = marks.at(landmark); //TODO: Pointer or just int?
 	}
-    return delta;
+    return count.size();
 }
 
 //Use this function to compare results and output
@@ -191,12 +194,11 @@ int main(int argc, char **argv) {
     for(uint16_t mark = 0; mark<landmarks; ++mark) {
         marks.push_back(mark);
     }
-	float delta = 0; //Represents a dimension range
+	int total = 0; //Represents a dimension range
 	for (int dim = 0; dim < d; ++dim) {
-		delta += grid(dataset, dim, landmarks, marks);
+		total += grid(dataset, dim, landmarks, marks);
 	}
-    delta /= d; //Average dimension range. Just for tesing.
-    cout << "Average dimension range: " << delta << endl;
+    cout << "total: " << total << endl;
     compare(output_file, input_folder, landmarks, dataset, queries, answers);
     return 0;
 }

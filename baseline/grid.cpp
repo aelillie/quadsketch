@@ -18,7 +18,7 @@ namespace po = boost::program_options;
 
 vector<Point> new_dataset;
 
-float grid(const vector<Point> &dataset, int dim, int landmarks, int *marks) {
+float grid(const vector<Point> &dataset, int dim, int landmarks, const vector<uint16_t> &marks) {
 	int n = dataset.size();
 	float cmin = 1e100, cmax = -1e100;
 	//Find smallest and biggest value in this dimension
@@ -29,11 +29,11 @@ float grid(const vector<Point> &dataset, int dim, int landmarks, int *marks) {
 	}
 	float delta = cmax - cmin; //range for this dimension
     //cout << delta << endl;
-	float landmark_coords[landmarks]; //Placeholder for landmark coordinates
+	vector<float> landmark_coords(landmarks); //Placeholder for landmark coordinates
 	float mark = cmin, space = delta / landmarks;
 	//Create a vector of landmark coordinates
 	for (int l = 0; l < landmarks; ++l) {
-		landmark_coords[l] = mark;
+		landmark_coords.push_back(mark);
 		mark += space;
 	}
 	//Round off all points in this dimension to nearest landmark
@@ -41,13 +41,14 @@ float grid(const vector<Point> &dataset, int dim, int landmarks, int *marks) {
 		float dist_min = numeric_limits<float>::infinity();;
 		int landmark = -1;
 		for (int mark = 0; mark<landmarks; ++mark) {
+            //NOTE: The following may not be the best float comparisons
 			float dist = fabs(dataset[i][dim] - landmark_coords[mark]);
 			if (dist < dist_min) {
 				dist_min = dist;
 				landmark = mark;
 			}
 		}
-		new_dataset[i][dim] = marks[landmark]; //TODO: Pointer or just int?
+		new_dataset[i][dim] = marks.at(landmark); //TODO: Pointer or just int?
 	}
     return delta;
 }
@@ -128,7 +129,7 @@ int main(int argc, char **argv) {
         ("help,h", "print usage message")
         ("input,i", po::value<string>(), "input dataset")
         ("output,o", po::value<string>(), "output file")
-        ("landmarks,l", po::value<int>(), "landmarks")
+        ("landmarks,l", po::value<uint16_t>(), "landmarks")
         ("num_queries,q", po::value<size_t>(), "number of queries used for evaluation");
     po::variables_map vm; //variables map derived from std::map<std::string, variable_value>
     //cause vm to contain all the options found on the command line
@@ -149,7 +150,7 @@ int main(int argc, char **argv) {
     //No errors, save input parameters
     string input_folder = vm["input"].as<string>();
     string output_file = "../results/" + vm["output"].as<string>();
-    int landmarks = vm["landmarks"].as<int>();
+    uint16_t landmarks = vm["landmarks"].as<uint16_t>();
     if (landmarks <= 0)
     {
         cout << desc << endl;
@@ -186,9 +187,9 @@ int main(int argc, char **argv) {
 	{
 		new_dataset[i].resize(d); //make space for a Point
 	}
-    int marks[landmarks];
-    for(int mark = 0; mark<landmarks; ++mark) {
-        marks[mark] = mark;
+    vector<uint16_t> marks(landmarks);
+    for(uint16_t mark = 0; mark<landmarks; ++mark) {
+        marks.push_back(mark);
     }
 	float delta = 0; //Represents a dimension range
 	for (int dim = 0; dim < d; ++dim) {

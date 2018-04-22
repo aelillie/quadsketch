@@ -19,7 +19,7 @@ namespace po = boost::program_options;
 
 vector<Point> new_dataset;
 
-int grid(const vector<Point> &dataset, int dim, int landmarks, const vector<uint16_t> &marks) {
+int grid(const vector<Point> &dataset, int dim, int landmarks, uint16_t *marks) {
 	int n = dataset.size();
 	float cmin = 1e100, cmax = -1e100;
 	//Find smallest and biggest value in this dimension
@@ -29,12 +29,11 @@ int grid(const vector<Point> &dataset, int dim, int landmarks, const vector<uint
 		cmax = max(cmax, dataset[i][dim]);
 	}
 	float delta = cmax - cmin; //range for this dimension
-    //cout << delta << endl;
-	vector<float> landmark_coords(landmarks); //Placeholder for landmark coordinates
+	float landmark_coords[landmarks]; //Placeholder for landmark coordinates
 	float mark = cmin, space = delta / landmarks;
 	//Create a vector of landmark coordinates
 	for (int l = 0; l < landmarks; ++l) {
-		landmark_coords.push_back(mark);
+		landmark_coords[l] = mark;
 		mark += space;
 	}
 	//Round off all points in this dimension to nearest landmark
@@ -42,16 +41,16 @@ int grid(const vector<Point> &dataset, int dim, int landmarks, const vector<uint
 	for (int i = 0; i < n; ++i) {
 		float dist_min = numeric_limits<float>::infinity();;
 		int landmark = -1;
-		for (int mark = 0; mark<landmarks; ++mark) {
+		for (int l = 0; l<landmarks; ++l) {
             //NOTE: The following may not be the best float comparisons
-			float dist = fabs(dataset[i][dim] - landmark_coords[mark]);
+			float dist = fabs(dataset[i][dim] - landmark_coords[l]);
 			if (dist < dist_min) {
 				dist_min = dist;
-				landmark = mark;
+				landmark = l;
 			}
 		}
-        count.insert(marks.at(landmark));
-		new_dataset[i][dim] = marks.at(landmark); //TODO: Pointer or just int?
+        count.insert(marks[landmark]);
+		new_dataset[i][dim] = marks[landmark]; //TODO: Pointer or just int?
 	}
     return count.size();
 }
@@ -190,15 +189,16 @@ int main(int argc, char **argv) {
 	{
 		new_dataset[i].resize(d); //make space for a Point
 	}
-    vector<uint16_t> marks(landmarks);
+    uint16_t marks[landmarks];
     for(uint16_t mark = 0; mark<landmarks; ++mark) {
-        marks.push_back(mark);
+        marks[mark] = mark;
     }
-	int total = 0; //Represents a dimension range
+	int total = 0;
 	for (int dim = 0; dim < d; ++dim) {
 		total += grid(dataset, dim, landmarks, marks);
 	}
     cout << "total: " << total << endl;
+    cout << "average landmarks pr. dimension: " << (total*1.0)/(d*1.0) << endl;
     compare(output_file, input_folder, landmarks, dataset, queries, answers);
     return 0;
 }

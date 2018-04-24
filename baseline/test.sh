@@ -18,7 +18,7 @@ for (( l=$START; l<=$END; l+=$STEP ))
 do
     outfile="$DATASET/grid-results-l$l.out"
     echo "Running grid on $DATASET with $l landmarks to $outfile"
-    #./grid -i ../datasets/$DATASET -o $outfile -l $l >/dev/null
+    ./grid -i ../datasets/$DATASET -o $outfile -l $l >/dev/null
 done
 
 echo "All done"

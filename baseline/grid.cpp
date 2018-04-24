@@ -19,23 +19,23 @@ namespace po = boost::program_options;
 
 vector<Point> new_dataset;
 
-int grid(const vector<Point> &dataset, int dim, int landmarks, float *landmark_coords, uint8_t *marks) {
+int grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks) {
 	int n = dataset.size();
-	// float cmin = 1e100, cmax = -1e100;
-	// //Find smallest and biggest value in this dimension
-	// for (int i = 0; i < n; ++i)
-	// {
-	// 	cmin = min(cmin, dataset[i][dim]);
-	// 	cmax = max(cmax, dataset[i][dim]);
-	// }
-	// float delta = cmax - cmin; //range for this dimension
-	// float landmark_coords[landmarks]; //Placeholder for landmark coordinates
-	// float mark = cmin, space = delta / landmarks;
-	// //Create a vector of landmark coordinates
-	// for (int l = 0; l < landmarks; ++l) {
-	// 	landmark_coords[l] = mark;
-	// 	mark += space;
-	// }
+	float cmin = 1e100, cmax = -1e100;
+	//Find smallest and biggest value in this dimension
+	for (int i = 0; i < n; ++i)
+	{
+		cmin = min(cmin, dataset[i][dim]);
+		cmax = max(cmax, dataset[i][dim]);
+	}
+	float delta = cmax - cmin; //range for this dimension
+	float landmark_coords[landmarks]; //Placeholder for landmark coordinates
+	float mark = cmin, space = delta / landmarks;
+	//Create a vector of landmark coordinates
+	for (int l = 0; l < landmarks; ++l) {
+		landmark_coords[l] = mark;
+		mark += space;
+	}
 	//Round off all points in this dimension to nearest landmark
     set<uint8_t> count;
 	for (int i = 0; i < n; ++i) {
@@ -193,27 +193,9 @@ int main(int argc, char **argv) {
     for(uint8_t mark = 0; mark<landmarks; ++mark) {
         marks[mark] = mark;
     }
-    float cmin = 1e100, cmax = -1e100;
-	//Find smallest and biggest value for all points
-	for (int i = 0; i < d; ++i) //go through all point dimensions
-    {
-        for (int j = 0; j < n; ++j) //go through all points
-        {
-            cmin = min(cmin, dataset[j][i]);
-            cmax = max(cmax, dataset[j][i]);
-        }
-    }
-	float delta = cmax - cmin; //range for this dimension
-	float landmark_coords[landmarks]; //Placeholder for landmark coordinates
-	float mark = cmin, space = delta / landmarks;
-	//Create a vector of landmark coordinates
-	for (int l = 0; l < landmarks; ++l) {
-		landmark_coords[l] = mark;
-		mark += space;
-	}
 	int total = 0;
 	for (int dim = 0; dim < d; ++dim) {
-		total += grid(dataset, dim, landmarks, landmark_coords, marks);
+		total += grid(dataset, dim, landmarks, marks);
 	}
     cout << "total: " << total << endl;
     cout << "average landmarks pr. dimension: " << (total*1.0)/(d*1.0) << endl;

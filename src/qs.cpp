@@ -61,17 +61,20 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
         mm.push_back((x.first + x.second) / 2.0);
     }
     map<vector<uint8_t>, vector<int>> parts;
+    //Make splitting of the points, based
+    //on if they are below or above random point
     for (auto x : who)
     {
         vector<uint8_t> code(dd, 0);
         for (int j = 0; j < d; ++j)
         {
             if (dataset[x][b1 + j] < mm[j])
-            { //Why empty if-body!?!?
+            { 
             }
             else
             {
-                code[j / 8] |= 1 << (j % 8); //bitwise magic
+                //0, 1, 3, 7, .., (i*2)+1
+                code[j / 8] |= 1 << (j % 8);
             }
         }
         parts[code].push_back(x);
@@ -80,6 +83,8 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
     {
         vector<pair<float, float>> newbb(bb.size());
         Point new_p(cur);
+        //Create a new random point based on the prior,
+        //and assign new leaf values if necessary
         for (int j = 0; j < d; ++j)
         {
             newbb[j] = bb[j];
@@ -100,7 +105,7 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
         (*dfs_size) += 2 + d;
         (*reduced_dfs_size) += 2;
         if (long_edge_length >= lambda && parts.size() == 1)
-        { //yet another empty if?!?
+        { 
         }
         else
         {

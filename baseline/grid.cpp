@@ -19,7 +19,7 @@ namespace po = boost::program_options;
 
 vector<Point> new_dataset;
 
-int grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks) {
+void grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks, double *size) {
 	int n = dataset.size();
 	float cmin = 1e100, cmax = -1e100;
 	//Find smallest and biggest value in this dimension
@@ -37,7 +37,7 @@ int grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks) {
 		mark += space;
 	}
 	//Round off all points in this dimension to nearest landmark
-    set<uint8_t> count;
+    map<uint8_t, int> counts;
 	for (int i = 0; i < n; ++i) {
 		float dist_min = numeric_limits<float>::infinity();;
 		int landmark = -1;
@@ -49,10 +49,16 @@ int grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks) {
 				landmark = l;
 			}
 		}
-        count.insert(marks[landmark]);
+        counts[marks[landmark]]++;
 		new_dataset[i][dim] = marks[landmark]; //TODO: Pointer or just int?
 	}
-    return count.size();
+    double total = 0;
+    for(auto x : counts) {
+        // cout << "landmark: " << (sizeof x.first) << " counts: " << x.second << endl;
+        // cout << "bits pr. coord: " << (sizeof x.first) / x.second << endl;
+        total += ((sizeof x.first)*8) / x.second;
+    }
+    (*size) += total/counts.size();
 }
 
 //Use this function to compare results and output
@@ -61,7 +67,8 @@ int grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks) {
              int landmarks,
              const vector<Point> &dataset,
              const vector<Point> &queries,
-             const vector<vector<uint32_t>> answers) {
+             const vector<vector<uint32_t>> answers,
+             double size) {
 	 int counter = 0;
 	 double distortion = 0.0;
 	 int q = queries.size(), n = dataset.size();
@@ -114,13 +121,15 @@ int grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks) {
 	 double accuracy = (counter + 0.0) / (q + 0.0);
 	 cout << "accuracy " << accuracy << endl;
 	 cout << "distortion " << dist << endl;
+     cout << "bits/coord: " << size << endl;     
      //Write out statistics to file
      ofstream output(output_file);
      output << "method grid" << endl;
      output << "dataset " << input_folder << endl;
      output << "landmarks " << landmarks << endl;
-     output << "nn_accuracy " << accuracy << endl;
+     output << "accuracy " << accuracy << endl;
      output << "distortion " << dist << endl;
+     output << "bits/coord: " << size << endl; 
      output.close();
  }
 
@@ -193,12 +202,10 @@ int main(int argc, char **argv) {
     for(uint8_t mark = 0; mark<landmarks; ++mark) {
         marks[mark] = mark;
     }
-	int total = 0;
+	double size = 0;
 	for (int dim = 0; dim < d; ++dim) {
-		total += grid(dataset, dim, landmarks, marks);
+		grid(dataset, dim, landmarks, marks, &size);
 	}
-    cout << "total: " << total << endl;
-    cout << "average landmarks pr. dimension: " << (total*1.0)/(d*1.0) << endl;
-    compare(output_file, input_folder, landmarks, dataset, queries, answers);
+    compare(output_file, input_folder, landmarks, dataset, queries, answers, size);
     return 0;
 }

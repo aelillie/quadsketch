@@ -18,6 +18,8 @@ using namespace ir;
 namespace po = boost::program_options;
 
 vector<Point> new_dataset;
+vector<pair<float, float>> min_max;
+bool decompress_nn;
 
 void grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks, double *size) {
 	int n = dataset.size();
@@ -29,6 +31,8 @@ void grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks, 
 		cmax = max(cmax, dataset[i][dim]);
 	}
 	float delta = cmax - cmin; //range for this dimension
+    min_max[dim].first = cmin;
+    min_max[dim].second = cmax;
 	float landmark_coords[landmarks]; //Placeholder for landmark coordinates
 	float mark = cmin, space = delta / landmarks;
 	//Create a vector of landmark coordinates
@@ -61,6 +65,32 @@ void grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks, 
     (*size) += total/counts.size();
 }
 
+void decompress(Point x_c, Point x, int dim, int l) {
+    for(int d = 0; d<dim; ++d) {
+        x[d] = min_max[d].first + ((min_max[d].second-min_max[d].first)/l)*x_c[d];
+    }
+}
+
+void nn(int n, //#points, i.e. n-q
+        int q, //query index
+        int dim, //#dimensions
+        int l, //#landmarks
+        float *best_score,
+        uint32_t *who) 
+{
+    Point y(dim);
+    decompress(new_dataset[q], y, dim, l);
+    for (int j = 0; j < n; ++j) {
+        Point x(dim);
+        decompress(new_dataset[j], x, dim, l);
+        float score = (x - y).squaredNorm();
+        if (score < (*best_score)) {
+            (*best_score) = score;
+            (*who) = j;
+        }
+    }
+}
+
 //Use this function to compare results and output
  void compare(string output_file,
              string input_folder,
@@ -68,7 +98,7 @@ void grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks, 
              const vector<Point> &dataset,
              const vector<Point> &queries,
              const vector<vector<uint32_t>> answers,
-             double size) {
+             int d, double size) {
 	 int counter = 0;
 	 double distortion = 0.0;
 	 int q = queries.size(), n = dataset.size();
@@ -78,19 +108,25 @@ void grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks, 
          in euclidean distance */
 		 float best_score = 1e100;
 		 uint32_t who = -1;
-		 for (int j = 0; j < n - q; ++j) {
-             /* Find distance between the int vectors,
-             that is the landmarks for data point j,
-             and query point i.
-             Note that the compressed query points are 
-             stored in the same vector as the compressed
-             data points */
-			 float score = (new_dataset[j] - new_dataset[n - q + i]).squaredNorm();
-			 if (score < best_score) {
-				 best_score = score;
-				 who = j;
-			 }
-		 }
+         if (decompress_nn) {
+             //Find nearest neighbor, decompressed
+             nn(n-q, n-q+i, d, landmarks, &best_score, &who);
+         } else {
+             for (int j = 0; j < n - q; ++j) {
+                /* Find distance between the int vectors,
+                that is the landmarks for data point j,
+                and query point i.
+                Note that the compressed query points are 
+                stored in the same vector as the compressed
+                data points */
+                float score = (new_dataset[j] - new_dataset[n - q + i]).squaredNorm();
+                if (score < best_score) {
+                    best_score = score;
+                    who = j;
+                }
+            }
+         }
+		 
         /* Check if the query point is actually already in 
         the original dataset, within some delta precision
         answers[i][0] is the true nearest neighbor, while
@@ -141,7 +177,8 @@ int main(int argc, char **argv) {
         ("input,i", po::value<string>(), "input dataset")
         ("output,o", po::value<string>(), "output file")
         ("landmarks,l", po::value<uint16_t>(), "landmarks")
-        ("num_queries,q", po::value<size_t>(), "number of queries used for evaluation");
+        ("num_queries,q", po::value<size_t>(), "number of queries used for evaluation")
+        ("decompress,d", po::value<size_t>(), "decompress flag for nearest neighbor");
     po::variables_map vm; //variables map derived from std::map<std::string, variable_value>
     //cause vm to contain all the options found on the command line
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -185,6 +222,9 @@ int main(int argc, char **argv) {
         }
         queries.erase(queries.begin() + num_queries, queries.end()); //only use first q queries
     }
+    if (vm.count("decompress")) {
+        decompress_nn = true;
+    } 
     for (auto x : queries) //auto type is automatically deduced from its initializer
     {
         dataset.push_back(x); //adds at the end
@@ -198,6 +238,7 @@ int main(int argc, char **argv) {
 	{
 		new_dataset[i].resize(d); //make space for a Point
 	}
+    min_max.resize(d);
     uint8_t marks[landmarks];
     for(uint8_t mark = 0; mark<landmarks; ++mark) {
         marks[mark] = mark;
@@ -206,6 +247,6 @@ int main(int argc, char **argv) {
 	for (int dim = 0; dim < d; ++dim) {
 		grid(dataset, dim, landmarks, marks, &size);
 	}
-    compare(output_file, input_folder, landmarks, dataset, queries, answers, size);
+    compare(output_file, input_folder, landmarks, dataset, queries, answers, size, d);
     return 0;
 }

@@ -1,0 +1,6 @@
+method grid
+dataset ../datasets/sift
+landmarks 29
+accuracy 0.8036
+distortion 1.00342
+bits/coord: 10.3582

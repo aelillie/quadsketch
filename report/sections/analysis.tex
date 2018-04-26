@@ -16,7 +16,7 @@ The first step is randomly shifted grid. Here there is constructed a hypercube \
 \\
 The next step is creating the \qt{}. A \textit{2d-ary} \qt{} is created by starting at the root of \texttt{H}. There is then only added the children which contain a point from \texttt{X}, thus child nodes that do not contain a point from \texttt{X} are ignored. Each edge to a child node is labeled with a \textit{d} long bit string that has been split on. This step is then done recursively until the level \texttt{L} is reached. An example of a constructed \qt{} is given in figure \ref{fig:quadtree}.
 
-%TODO: SÆT STØRRELSEN OP MAND!!!
+%TODO: SÆT STØRRELSEN OP MAND på font størelsen!!!
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{figures/quadtree}
 \includegraphics[width=0.5\textwidth]{figures/prunnedquadtree}
@@ -37,6 +37,18 @@ Randomly shifting a hypercube in each dimension is necessary for the \qs{} imple
 If the dataset is of a known format, randomly shifting it in each dimension could turn out to be less effective than taking a more specific approach. An example could be a dataset in which all the points are very close to each other. A large amount of the points might end up in the same leaves and as such defeat the purpose of using the \qt{} to begin with. Randomly shifting over these points will not be of any significant gain to the problem at hand. One approach could be to spread out the dataset in the sense of scaling the points given some constant to increase the distance between them and hereby obtain a \qt{} of a better quality. The original relative distance is preserved by remembering the scaling constant.
 
 \subsection{Theorems}
+
+\subsubsection{Aspect ratio}
+The aspect ratio is defined as the ratio between the largest and smallest distance between points in the dataset\cite{wagner17}. The aspect ratio is denoted as $\Phi$:
+\\
+\\
+$$ \Phi = \frac{max_{1<i<j<n} || x_i - x_j || }{min_{1<i<j<n} || x_i - x_j || } $$
+\\
+\\
+The aspect ratio can be used to gain insight about the distribution of data points in euclidean space. When $\Phi$ approaches 1 then points are clustered close together. When $\Phi$ grows then the points are more spread out in the point space but will not describe how the points are spread. There could be an outliers which gives a big $\Phi$.
+
+
+\subsubsection{Theorems}
 The paper introduces three theorems, where \tm{1} is the main theorem covering the basic variant of \qs{}. \tm{2} covers an advanced variant, and \tm{3} is the full version. The former makes guarantees for a \qs{} variant, where “for each point, the distances from that point to all other points are preserved up to a factor of 1+- $\epsilon$ with a constant probability”, whereas the latter “makes it possible to approximately preserve the distances between all pairs of points”. It seems like \tm{1} thus allows us to find distances between one single point and to all other points, but not the other way around, whereas with \tm{2} we can find the distance both from node 1 to node 2 and 3, but also from node 2 to node 3. This comes with a trade off, as with \tm{1} you are able to recover any points by decompressing the sketch, which is infeasible with \tm{2}, where \qs{} is recursively applied.
 
 %(TODO: Then what is theorem 3?)

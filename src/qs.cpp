@@ -73,7 +73,7 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
             }
             else
             {
-                //0, 1, 3, 7, .., (i*2)+1
+                //adds a bit from right to left
                 code[j / 8] |= 1 << (j % 8);
             }
         }
@@ -261,7 +261,7 @@ int main(int argc, char **argv)
         int t = 0;
         while (1ll << t < num_leaves)
         {
-            ++t;
+            ++t; //#branches from root
         }
         total += n * t;
         t = 0;

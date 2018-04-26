@@ -64,8 +64,6 @@ void grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks, 
     double total = 0;
     for (auto x : counts)
     {
-        // cout << "landmark: " << (sizeof x.first) << " counts: " << x.second << endl;
-        // cout << "bits pr. coord: " << (sizeof x.first) / x.second << endl;
         total += ((sizeof x.first) * 8) / x.second;
     }
     (*size) += total / counts.size();

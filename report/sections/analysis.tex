@@ -4,6 +4,7 @@
 %From the course's intended learning outcomes (ILO):
 %"Find, extract and explain results in the algorithms research literature relevant to a given problem"
 %"Theoretically analyze the performance of a given algorithmic solution"
+In order to compress a point set p and approximately maintain the relative distance between the points in p, a data structure referred to as a \texttt{sketch} is utilized. This section will cover how the sketch is build and analyze the parameters used in the algorithm and the impact of these on the running time and size of the sketch.
 
 \subsection{Building the sketch}
 The sketch is a compressed representation of a point set \texttt{X}. The points of \texttt{X} have \texttt{d} dimensions and are in \textit{euclidean} space. Each coordinate of a point is represented by \texttt{B} bits implying a point is represented by \textit{dB} bits. \qs{} will take as input the point set \texttt{X} and two additional parameters \texttt{L} and $\Lambda$. These two parameters are used to specify the compression of the point set where \texttt{L} is the depth of the \qt{} and $\Lambda$ is the amount of nodes from the \qt{} which can be removed. 
@@ -46,6 +47,9 @@ $$ \Phi = \frac{max_{1<i<j<n} || x_i - x_j || }{min_{1<i<j<n} || x_i - x_j || } 
 \\
 \\
 The aspect ratio can be used to gain insight about the distribution of data points in euclidean space. When $\Phi$ approaches 1 then points are clustered close together. When $\Phi$ grows then the points are more spread out in the point space but will not describe how the points are spread. There could be an outlier which gives a big $\Phi$. If some point set p is distributed in a euclidean space, the quad sketch will need more bits to precisely describe the position of points in p. Hence $\Phi$ has an impact on how the parameters $\Lambda$ and $\L$ should be set to dictate the guarantees of the sketch.
+\\
+\\
+When $\Phi$ grows, so does the required value for both $\Lambda$ and $\L$ if the guarantees given in the theorems are to hold. A large aspect ratio describes a point set in which at least one point is far from the other points relative to the distance between the other points. This results in a need to store more information in order to retain the relative distances between the points in the sketch. 
 
 \subsubsection{Theorems}
 The paper introduces three theorems, where \tm{1} is the main theorem covering the basic variant of \qs{}. \tm{2} covers an advanced variant, and \tm{3} is the full version. The former makes guarantees for a \qs{} variant, where “for each point, the distances from that point to all other points are preserved up to a factor of 1+- $\epsilon$ with a constant probability”, whereas the latter “makes it possible to approximately preserve the distances between all pairs of points”. It seems like \tm{1} thus allows us to find distances between one single point and to all other points, but not the other way around, whereas with \tm{2} we can find the distance both from node 1 to node 2 and 3, but also from node 2 to node 3. This comes with a trade off, as with \tm{1} you are able to recover any points by decompressing the sketch, which is infeasible with \tm{2}, where \qs{} is recursively applied.

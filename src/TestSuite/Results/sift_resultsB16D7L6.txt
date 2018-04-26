@@ -1,0 +1,10 @@
+method qs
+dataset ../datasets/sift
+num_blocks 16
+depth 7
+lambda 6
+size 657348863
+aspect ratio 218
+dim 128
+nn_accuracy 0.9203
+distortion 1.00048

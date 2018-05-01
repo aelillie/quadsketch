@@ -148,14 +148,10 @@ void compare(string output_file,
     double accuracy = (counter + 0.0) / (q + 0.0);
     cout << "accuracy " << accuracy << endl;
     cout << "distortion " << dist << endl;
+    cout << "bits/coord: " << size << endl;
     //Write out statistics to file
-    ofstream output(output_file);
-    output << "method grid" << endl;
-    output << "dataset " << input_folder << endl;
-    output << "landmarks " << landmarks << endl;
-    output << "accuracy " << accuracy << endl;
-    output << "distortion " << dist << endl;
-    output << "bits/coord: " << size << endl;
+    ofstream output(output_file, ios_base::app);
+    output << "grid," << input_folder << "," << landmarks << "," << accuracy << "," << dist << "," size << endl;
     output.close();
 }
 
@@ -188,7 +184,7 @@ int main(int argc, char **argv)
     }
     //No errors, save input parameters
     string input_folder = vm["input"].as<string>();
-    string output_file = "../results/" + vm["output"].as<string>();
+    string output_file = "grid_results/" + vm["output"].as<string>();
     uint16_t landmarks = vm["landmarks"].as<uint16_t>();
     if (landmarks <= 0)
     {

@@ -151,7 +151,7 @@ void compare(string output_file,
     cout << "bits/coord: " << size << endl;
     //Write out statistics to file
     ofstream output(output_file, ios_base::app);
-    output << "grid," << input_folder << "," << landmarks << "," << accuracy << "," << dist << "," size << endl;
+    output << "grid," << input_folder << "," << landmarks << "," << accuracy << "," << dist << "," << size << endl;
     output.close();
 }
 

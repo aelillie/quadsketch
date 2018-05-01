@@ -1,8 +1,8 @@
 #!/bin/bash
-if [ $# -lt 4 ]
+if [ $# -lt 5 ]
     then
         echo "Not enough arguments supplied. Run with:"
-        echo "test.sh <#start> <#end> <#step> <dataset>"
+        echo "test.sh <#start> <#end> <#step> <dataset> <outfile>"
         exit 1
 fi
 
@@ -13,12 +13,12 @@ START=$1
 END=$2
 STEP=$3
 DATASET=$4
+OUTFILE=$5
 
 for (( l=$START; l<=$END; l+=$STEP ))
 do
-    outfile="$DATASET/grid-results-l$l-decompressed.out"
-    echo "Running grid on $DATASET with $l landmarks to $outfile"
-    ./grid -i ../datasets/$DATASET -o $outfile -l $l -d >/dev/null
+    echo "Running grid on $DATASET with $l landmarks to $OUTFILE"
+    ./grid -i ../datasets/$DATASET -o $OUTFILE -l $l -d >/dev/null
 done
 
 echo "All done"

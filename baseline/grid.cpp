@@ -11,17 +11,20 @@
 #include <vector>
 #include <math.h>
 #include <limits>
+#include <thread>
 
 using namespace std;
 using namespace std::chrono;
 using namespace ir;
 namespace po = boost::program_options;
 
+vector<Point> dataset;
 vector<Point> new_dataset;
 vector<pair<float, float>> min_max;
-bool decompress_nn;
+int threads;
+uint16_t landmarks;
 
-void grid(const vector<Point> &dataset, int dim, int landmarks, uint16_t *marks)
+void grid(int dim, vector<uint16_t> marks)
 {
     int n = dataset.size();
     float cmin = 1e100, cmax = -1e100;
@@ -61,10 +64,17 @@ void grid(const vector<Point> &dataset, int dim, int landmarks, uint16_t *marks)
     }
 }
 
-void decompress(int n, //#points, including query points
-                int l) //#landmarks
+void run_grid(int start, int end, vector<uint16_t> marks) 
 {
-    int dim = new_dataset[0].size();
+    for (int dim = start; dim < end; ++dim)
+    {
+        grid(dim, marks);
+    }    
+}
+
+void decompress()
+{
+    int n = dataset.size(), dim = new_dataset[0].size();
     for (int j = 0; j < n; ++j)
     {
         for (int d = 0; d < dim; ++d)
@@ -72,28 +82,21 @@ void decompress(int n, //#points, including query points
             /* Approximate coordinate from landmark,
             by computing (min+((max-min)/landmarks)*landmark) */
             new_dataset[j][d] = min_max[d].first +
-                                ((min_max[d].second - min_max[d].first) / l) * new_dataset[j][d];
+                                ((min_max[d].second - min_max[d].first) / landmarks) * new_dataset[j][d];
         }
     }
 }
 
-//Use this function to compare results and output
-void compare(string output_file,
-             string input_folder,
-             int landmarks,
-             const vector<Point> &dataset,
-             const vector<Point> &queries,
-             const vector<vector<uint32_t>> answers,
-             double size)
+void run_compare(int start, int end, 
+                const vector<Point> &queries, 
+                const vector<vector<uint32_t>> answers,
+                vector<int> &counter, 
+                vector<double> &distortion, 
+                int t)
 {
-    int counter = 0;
-    double distortion = 0.0;
+    cout << "Thread " << t << " start" << endl;
     int q = queries.size(), n = dataset.size();
-    if (decompress_nn)
-    {
-        decompress(n, landmarks); //decompress all points
-    }
-    for (int i = 0; i < q; ++i)
+    for (int i = start; i < end; ++i)
     {
         /* Find nearest neighbor to query point */
         float best_score = 1e100;
@@ -115,25 +118,63 @@ void compare(string output_file,
         float dd = (dataset[answers[i][0]] - queries[i]).norm();
         if (dd < 1e-3)
         {
-            distortion += 1.0; //No distortion, as it is the same
-            ++counter;         //Perfect accuracy
-            cout << "=" << flush;
+            distortion[t] += 1.0; //No distortion, as it is the same
+            counter[t]++;         //Perfect accuracy
+            //cout << "=" << flush;
         }
         /*otherwise, we check if the compressed nearest neighbor
          is the true nearest neighbor */
         else
         {
-            distortion += (dataset[who] - queries[i]).norm() / (dataset[answers[i][0]] - queries[i]).norm();
+            distortion[t] += (dataset[who] - queries[i]).norm() / (dataset[answers[i][0]] - queries[i]).norm();
             if (who == answers[i][0]) //The indices match, this it is a hit
             {
-                ++counter;
-                cout << "+" << flush;
+                counter[t]++;
+                //cout << "+" << flush;
             }
             else //The compressed NN was incorrect
             {
-                cout << "-" << flush;
+                //cout << "-" << flush;
             }
         }
+    }
+    cout << "Thread " << t << " end. " << endl;
+}
+
+//Use this function to compare results and output
+void compare(string output_file,
+             string input_folder,
+             const vector<Point> &queries,
+             const vector<vector<uint32_t>> answers,
+             double size)
+{
+    vector<int> counters(threads, 0);
+    vector<double> distortions(threads, 0.0);
+    int q = queries.size();
+    cout << "Decompressing..." << endl;
+    decompress(); //decompress all points
+    cout << "Done decompressing..." << endl;
+    cout << "Starting nearest neighbor search..." << endl;
+    thread compare_threads[threads];
+    int start = 0, m = q/threads, end = m;
+    for(int i = 0; i < threads; ++i)
+    {
+        compare_threads[i] = 
+            thread(run_compare, start, end, queries, answers, ref(counters), ref(distortions), i);
+        start = end;
+        end += m; 
+    }
+    for (int i=0; i<threads; i++){
+        compare_threads[i].join();
+    }
+    cout << "Done" << endl;
+    int counter = 0;
+    double distortion = 0.0;
+    for(auto c : counters) {
+        counter += c;
+    }
+    for(auto d : distortions) {
+        distortion += d;
     }
     cout << endl;
     double dist = (distortion + 0.0) / (q + 0.0);
@@ -157,7 +198,7 @@ int main(int argc, char **argv)
         ("output,o", po::value<string>(), "output file")
         ("landmarks,l", po::value<uint16_t>(), "landmarks")
         ("num_queries,q", po::value<size_t>(), "number of queries used for evaluation")
-        ("decompress,d", "decompress flag for nearest neighbor");
+        ("threads,t", po::value<int>(), "number of threads");
     po::variables_map vm; //variables map derived from std::map<std::string, variable_value>
     //cause vm to contain all the options found on the command line
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -177,7 +218,7 @@ int main(int argc, char **argv)
     //No errors, save input parameters
     string input_folder = vm["input"].as<string>();
     string output_file = "grid_results/" + vm["output"].as<string>();
-    uint16_t landmarks = vm["landmarks"].as<uint16_t>();
+    landmarks = vm["landmarks"].as<uint16_t>();
     if (landmarks <= 0)
     {
         cout << desc << endl;
@@ -185,7 +226,6 @@ int main(int argc, char **argv)
     }
 
     //Populate data vectors
-    vector<Point> dataset;
     vector<Point> queries;
     vector<vector<uint32_t>> answers;
     deserialize(input_folder + "/dataset.dat", &dataset); //Input data
@@ -201,9 +241,13 @@ int main(int argc, char **argv)
         }
         queries.erase(queries.begin() + num_queries, queries.end()); //only use first q queries
     }
-    if (vm.count("decompress"))
+    if (vm.count("threads"))
     {
-        decompress_nn = true;
+        threads = vm["threads"].as<int>();
+    }
+    else 
+    {
+        threads = 4;
     }
     //Append query points to the end of dataset
     for (auto x : queries) 
@@ -220,21 +264,28 @@ int main(int argc, char **argv)
         new_dataset[i].resize(d); //make space for a Point
     }
     min_max.resize(d);
-    uint16_t marks[landmarks];
+    vector<uint16_t> marks(landmarks);
     for (uint16_t mark = 0; mark < landmarks; ++mark)
     {
         marks[mark] = mark;
     }
-    for (int dim = 0; dim < d; ++dim)
-    {
-        grid(dataset, dim, landmarks, marks);
-    }
-    double size = log2(landmarks*1.0);
     cout << "Dataset size: " << (n-q) << ", point dimensions: " << d << endl;
     cout << "Queries: " << q << endl;
+    cout << "Compressing..." << endl;
+    thread grid_threads[threads];
+    int start = 0, m = d/threads, end = m;
+    for(int i = 0; i < threads; ++i)
+    {
+        grid_threads[i] = thread(run_grid, start, end, marks);
+        start = end;
+        end += m; 
+    }
+    for (int i=0; i<threads; i++){
+        grid_threads[i].join();
+    }
+    double size = log2(landmarks*1.0);
     cout << "Done compressing..." << endl;
     cout << "bits/coord: " << size << endl;
-    cout << "Starting nearest neighbor search..." << endl;
-    compare(output_file, input_folder, landmarks, dataset, queries, answers, size);
+    compare(output_file, input_folder, queries, answers, size);
     return 0;
 }

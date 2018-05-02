@@ -15,7 +15,7 @@ STEP=$3
 DATASET=$4
 OUTFILE=$5
 
-for (( l=$START; l<=$END; l+=$STEP ))
+for (( l=$START; l<=$END; l*=$STEP ))
 do
     echo "Running grid on $DATASET with $l landmarks to $OUTFILE"
     ./grid -i ../datasets/$DATASET -o $OUTFILE -l $l -d >/dev/null

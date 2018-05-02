@@ -32,7 +32,6 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
            int long_edge_length, //initially 0
            int lambda)
 {
-    int n = dataset.size();
     int d = b2 - b1; //block length
     int dd = d / 8; //divide block
     if (d % 8) //check if there is excess space
@@ -137,7 +136,7 @@ int main(int argc, char **argv)
 {
     //Description of arguments
     po::options_description desc("Allowed options");
-    desc.add_options()("help,h", "print usage message")("input,i", po::value<string>(), "input dataset")("output,o", po::value<string>(), "output file")("depth,d", po::value<int>(), "depth of a tree")("num_blocks,n", po::value<int>(), "number of blocks")("lambda,l", po::value<int>(), "compression parameter")("num_queries,q", po::value<int>(), "number of queries used for evaluation");
+    desc.add_options()("help,h", "print usage message")("input,i", po::value<string>(), "input dataset")("output,o", po::value<string>(), "output file")("depth,d", po::value<int>(), "depth of a tree")("num_blocks,n", po::value<int>(), "number of blocks")("lambda,l", po::value<int>(), "compression parameter")("num_queries,q", po::value<size_t>(), "number of queries used for evaluation");
     po::variables_map vm; //variables map derived from std::map<std::string, variable_value>
     //cause vm to contain all the options found on the command line
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -155,7 +154,7 @@ int main(int argc, char **argv)
     }
     //No errors, save input parameters
     string input_folder = vm["input"].as<string>();
-    string output_file = "../results/" + vm["output"].as<string>();
+    string output_file = "qsr_results/" + vm["output"].as<string>();
     int num_blocks = vm["num_blocks"].as<int>();
     int depth = vm["depth"].as<int>();
     int lambda = vm["lambda"].as<int>();
@@ -190,7 +189,7 @@ int main(int argc, char **argv)
     deserialize(input_folder + "/answers.dat", &answers); //Comparison data
     if (vm.count("num_queries"))
     {
-        int num_queries = vm["num_queries"].as<int>();
+        size_t num_queries = vm["num_queries"].as<size_t>();
         if (num_queries > queries.size())
         {
             cout << desc << endl;
@@ -218,7 +217,6 @@ int main(int argc, char **argv)
         }
     }
     float delta = cmax - cmin; //delta range/"diameter" of hyper cube
-    float a_r = cmax/cmin;
     cmin -= delta;
     uniform_real_distribution<float> u(0.0, delta); //returns random floating-point between 0.0 and delta
     //initialize int vector of same length as data set with index identity values
@@ -271,7 +269,6 @@ int main(int argc, char **argv)
         }
         total += num_reduced_edges * t;
     }
-    cout << total << endl;
     int counter = 0;
     double distortion = 0.0;
     for (int i = 0; i < q; ++i)
@@ -309,19 +306,17 @@ int main(int argc, char **argv)
         }
     }
     cout << endl;
-    cout << "Counts per query: " << (counter + 0.0) / (q + 0.0) << endl;
-    cout << "distortion " << (distortion + 0.0) / (q + 0.0) << endl;
+    double accuracy = (counter + 0.0) / (q + 0.0);
+    distortion /= q*1.0;
+    double bc = (total*1.0/((n*1.0)*(d*1.0)));
+    float a_r = cmax/cmin;
+    cout << "accuracy: " << accuracy << endl;
+    cout << "distortion: " << distortion<< endl;
     cout << "aspect ratio: " << a_r << endl;
-    ofstream output(output_file);
-    output << "method qs" << endl;
-    output << "dataset " << input_folder << endl;
-    output << "num_blocks " << num_blocks << endl;
-    output << "depth " << depth << endl;
-    output << "lambda " << lambda << endl;
-    output << "size " << total << endl;
-    output << "nn_accuracy " << (counter + 0.0) / (q + 0.0) << endl;
-    output << "distortion " << (distortion + 0.0) / (q + 0.0) << endl;
-    output << "aspect ratio: " << a_r << endl;
+    ofstream output(output_file, ios_base::app);
+    output << "qsr," << total << "," << lambda << "," << depth << "," << input_folder << "," 
+        << bc << "," << accuracy << "," << distortion << "," << d << "," << a_r << "," << num_blocks << endl;
     output.close();
+    //size,lambda,depth,dataset,B,accuracy,distortion,dim,aspectRatio,blocks
     return 0;
 }

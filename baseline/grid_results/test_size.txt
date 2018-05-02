@@ -1,7 +1,0 @@
-grid,../datasets/sift,150,0.9712,1.00006,0.301622
-grid,../datasets/sift,16,0.771,1.00485,4
-grid,../datasets/sift,16,0,0,4
-grid,../datasets/sift,16,0,0,4
-grid,../datasets/sift,16,0,0,4
-grid,../datasets/sift,16,0.771,1.00485,4
-grid,../datasets/sift,16,0.7422,1.00649,4

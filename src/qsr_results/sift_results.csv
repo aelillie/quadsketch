@@ -1,1 +1,3 @@
 method,size,lambda,depth,dataset,B,accuracy,distortion,dim,aspectRatio,blocks
+qsr,660029836,5,7,../datasets/sift,5.10543,0.9206,1.00047,128,-1,16
+qsr,823826689,6,8,../datasets/sift,6.37242,0.9611,1.00012,128,0,16

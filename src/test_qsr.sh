@@ -20,7 +20,7 @@ do
     LAMBDA=$k
     DEPTH=$((k+$STEP))
     echo "Running qsr on $DATASET with blocks $BLOCKS, depth $DEPTH, and lambda $LAMBDA to $outfile"
-    ./qsr -i ../datasets/$DATASET -o $OUTFILE -n $BLOCKS -d $DEPTH -l $LAMBDA #>/dev/null
+    ./qsr -i ../datasets/$DATASET -o $OUTFILE -n $BLOCKS -d $DEPTH -l $LAMBDA >/dev/null
 done
 
 echo "All done"

@@ -21,7 +21,7 @@ vector<Point> new_dataset;
 vector<pair<float, float>> min_max;
 bool decompress_nn;
 
-void grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks, double *size)
+void grid(const vector<Point> &dataset, int dim, int landmarks, uint16_t *marks)
 {
     int n = dataset.size();
     float cmin = 1e100, cmax = -1e100;
@@ -43,7 +43,6 @@ void grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks, 
         mark += space;
     }
     //Round off all points in this dimension to nearest landmark
-    map<uint8_t, int> counts;
     for (int i = 0; i < n; ++i)
     {
         float dist_min = numeric_limits<float>::infinity();
@@ -58,15 +57,8 @@ void grid(const vector<Point> &dataset, int dim, int landmarks, uint8_t *marks, 
                 landmark = l;
             }
         }
-        counts[marks[landmark]]++;
         new_dataset[i][dim] = marks[landmark]; //TODO: Pointer or just int?
     }
-    double total = 0;
-    for (auto x : counts)
-    {
-        total += ((sizeof x.first) * 8) / x.second;
-    }
-    (*size) += total / counts.size();
 }
 
 void decompress(int n, //#points, including query points
@@ -228,16 +220,16 @@ int main(int argc, char **argv)
         new_dataset[i].resize(d); //make space for a Point
     }
     min_max.resize(d);
-    uint8_t marks[landmarks];
-    for (uint8_t mark = 0; mark < landmarks; ++mark)
+    uint16_t marks[landmarks];
+    for (uint16_t mark = 0; mark < landmarks; ++mark)
     {
         marks[mark] = mark;
     }
-    double size = 0;
     for (int dim = 0; dim < d; ++dim)
     {
-        grid(dataset, dim, landmarks, marks, &size);
+        grid(dataset, dim, landmarks, marks);
     }
+    double size = log2(landmarks*1.0);
     cout << "Dataset size: " << (n-q) << ", point dimensions: " << d << endl;
     cout << "Queries: " << q << endl;
     cout << "Done compressing..." << endl;

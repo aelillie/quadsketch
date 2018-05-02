@@ -8,13 +8,16 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <thread>
 
 using namespace std;
 using namespace std::chrono;
 using namespace ir;
 namespace po = boost::program_options;
 
+vector<Point> dataset;
 vector<Point> new_dataset;
+int threads;
 
 void solve(const vector<Point> &dataset, //initally the complete input dataset
            int b1, //block start
@@ -132,6 +135,60 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
     }
 }
 
+void run_nn(int start, int end, 
+            const vector<Point> &queries, 
+            const vector<vector<uint32_t>> answers,
+            vector<int> &counter, 
+            vector<double> &distortion, 
+            int t)
+{
+    cout << "Thread " << t << " start" << endl;
+    int q = queries.size(), n = dataset.size();
+    for (int i = start; i < end; ++i)
+    {
+        /* Find nearest neighbor to query point */
+        float best_score = 1e100;
+        uint32_t who = -1;
+        for (int j = 0; j < n - q; ++j)
+        {
+            float score = (new_dataset[j] - new_dataset[n - q + i]).squaredNorm();
+            if (score < best_score)
+            {
+                best_score = score;
+                who = j;
+            }
+        }
+
+        /* Check if the query point is actually already in 
+        the original dataset, within some delta precision
+        answers[i][0] is the true nearest neighbor, while
+        answers[i][1...K] are the K nearest neighbors(sorted) */
+        float dd = (dataset[answers[i][0]] - queries[i]).norm();
+        if (dd < 1e-3)
+        {
+            distortion[t] += 1.0; //No distortion, as it is the same
+            counter[t]++;         //Perfect accuracy
+            //cout << "=" << flush;
+        }
+        /*otherwise, we check if the compressed nearest neighbor
+         is the true nearest neighbor */
+        else
+        {
+            distortion[t] += (dataset[who] - queries[i]).norm() / (dataset[answers[i][0]] - queries[i]).norm();
+            if (who == answers[i][0]) //The indices match, this it is a hit
+            {
+                counter[t]++;
+                //cout << "+" << flush;
+            }
+            else //The compressed NN was incorrect
+            {
+                //cout << "-" << flush;
+            }
+        }
+    }
+    cout << "Thread " << t << " end. " << endl;
+}
+
 int main(int argc, char **argv)
 {
     //Description of arguments
@@ -180,7 +237,6 @@ int main(int argc, char **argv)
     }
     random_device rd;     //integer random number generator
     mt19937_64 gen(rd()); //random_device implements the mt19937_64 64-bit number generator
-    vector<Point> dataset;
     vector<Point> queries;
     vector<vector<uint32_t>> answers;
     //Populate data vectors
@@ -218,6 +274,24 @@ int main(int argc, char **argv)
     }
     float delta = cmax - cmin; //delta range/"diameter" of hyper cube
     cmin -= delta;
+    //Find aspect ratio
+    // float lowest = 1e100, highest = -1e100;
+    // for(int i = 0; i<n+q; ++i) {
+    //     for (int j = i+1; j < n+q; ++j)
+    //     {
+    //         float score = (dataset[i] - dataset[j]).squaredNorm();
+    //         if (score < lowest)
+    //         {
+    //             lowest = score;
+    //         }
+    //         if (score > highest)
+    //         {
+    //             highest = score;
+    //         }
+    //     }
+    // }
+    // float a_r = highest/lowest;
+    float a_r = 0.0;
     uniform_real_distribution<float> u(0.0, delta); //returns random floating-point between 0.0 and delta
     //initialize int vector of same length as data set with index identity values
     vector<int> all(n);
@@ -269,47 +343,32 @@ int main(int argc, char **argv)
         }
         total += num_reduced_edges * t;
     }
+    threads = 4;
+    vector<int> counters(threads, 0);
+    vector<double> distortions(threads, 0.0);
+    cout << "Starting nearest neighbor search..." << endl;
+    thread compare_threads[threads];
+    int t_start = 0, m = q/threads, t_end = m;
+    for(int i = 0; i < threads; ++i)
+    {
+        compare_threads[i] = 
+            thread(run_nn, t_start, t_end, queries, answers, ref(counters), ref(distortions), i);
+        t_start = t_end;
+        t_end += m; 
+    }
+    for (int i=0; i<threads; i++){
+        compare_threads[i].join();
+    }
+    cout << "Done" << endl;
     int counter = 0;
     double distortion = 0.0;
-    for (int i = 0; i < q; ++i)
-    {
-        float best_score = 1e100;
-        int who = -1;
-        for (int j = 0; j < n - q; ++j)
-        {
-            float score = (new_dataset[j] - new_dataset[n - q + i]).squaredNorm();
-            if (score < best_score)
-            {
-                best_score = score;
-                who = j;
-            }
-        }
-        float dd = (dataset[answers[i][0]] - queries[i]).norm();
-        if (dd < 1e-3)
-        {
-            distortion += 1.0;
-            ++counter;
-            cout << "+" << flush;
-        }
-        else
-        {
-            distortion += (dataset[who] - queries[i]).norm() / (dataset[answers[i][0]] - queries[i]).norm();
-            if (who == answers[i][0])
-            {
-                ++counter;
-                cout << "+" << flush;
-            }
-            else
-            {
-                cout << "-" << flush;
-            }
-        }
+    for(int i = 0; i<threads; ++i) {
+        counter += counters[i];
+        distortion += distortions[i];
     }
-    cout << endl;
     double accuracy = (counter + 0.0) / (q + 0.0);
     distortion /= q*1.0;
     double bc = (total*1.0/((n*1.0)*(d*1.0)));
-    float a_r = cmax/cmin;
     cout << "accuracy: " << accuracy << endl;
     cout << "distortion: " << distortion<< endl;
     cout << "aspect ratio: " << a_r << endl;

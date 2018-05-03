@@ -5,7 +5,7 @@ if [ $# -lt 2 ]
         echo "<dataset> <outfile>"
         exit 1
 fi
-
+#Run as such for MNIST: ./test_qsr.sh mnist mnist_results.csv
 make qsr
 
 DATASET=$1
@@ -13,7 +13,7 @@ OUTFILE=$2
 
 for (( b=2; b<=32; b*=2 ))
 do
-    for (( d=2; d<=20; d++ ))
+    for (( d=2; d<=10; d++ ))
     do
         for (( l=1; l<$d; l++ ))
         do

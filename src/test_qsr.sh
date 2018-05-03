@@ -2,7 +2,7 @@
 if [ $# -lt 2 ]
     then
         echo "Not enough arguments supplied. Run with:"
-        echo "test_qsr.sh <start> <end> <step> <dataset> <#blocks>"
+        echo "test_qsr.sh <start> <end> <step> <#blocks> <dataset> <outfile>"
         exit 1
 fi
 

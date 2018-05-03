@@ -312,12 +312,15 @@ int main(int argc, char **argv)
     cout << "Counts per query: " << (counter + 0.0) / (q + 0.0) << endl;
     cout << "distortion " << (distortion + 0.0) / (q + 0.0) << endl;
     ofstream output(output_file);
+    //output order relevant for automatic read of generated files. 
     output << "method qs" << endl;
     output << "dataset " << input_folder << endl;
     output << "num_blocks " << num_blocks << endl;
     output << "depth " << depth << endl;
     output << "lambda " << lambda << endl;
     output << "size " << total << endl;
+    output << "delta " << delta << endl;
+    output << "dim " << d << endl;
     output << "nn_accuracy " << (counter + 0.0) / (q + 0.0) << endl;
     output << "distortion " << (distortion + 0.0) / (q + 0.0) << endl;
     output.close();

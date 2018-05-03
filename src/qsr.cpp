@@ -276,10 +276,10 @@ int main(int argc, char **argv)
     cmin -= delta;
     //Find aspect ratio
     // float lowest = 1e100, highest = -1e100;
-    // for(int i = 0; i<n+q; ++i) {
-    //     for (int j = i+1; j < n+q; ++j)
+    // for(int i = 0; i<n; ++i) {
+    //     for (int j = i+1; j < n; ++j)
     //     {
-    //         float score = (dataset[i] - dataset[j]).squaredNorm();
+    //         float score = (dataset[i] - dataset[j]).norm();
     //         if (score < lowest)
     //         {
     //             lowest = score;

@@ -17,7 +17,7 @@ namespace po = boost::program_options;
 
 vector<Point> dataset;
 vector<Point> new_dataset;
-int threads;
+int threads = 4;
 
 void solve(const vector<Point> &dataset, //initally the complete input dataset
            int b1, //block start
@@ -193,7 +193,7 @@ int main(int argc, char **argv)
 {
     //Description of arguments
     po::options_description desc("Allowed options");
-    desc.add_options()("help,h", "print usage message")("input,i", po::value<string>(), "input dataset")("output,o", po::value<string>(), "output file")("depth,d", po::value<int>(), "depth of a tree")("num_blocks,n", po::value<int>(), "number of blocks")("lambda,l", po::value<int>(), "compression parameter")("num_queries,q", po::value<size_t>(), "number of queries used for evaluation");
+    desc.add_options()("help,h", "print usage message")("input,i", po::value<string>(), "input dataset")("output,o", po::value<string>(), "output file")("depth,d", po::value<int>(), "depth of a tree")("num_blocks,n", po::value<int>(), "number of blocks")("lambda,l", po::value<int>(), "compression parameter")("num_queries,q", po::value<size_t>(), "number of queries used for evaluation")("threads,t", po::value<int>(), "number of threads");
     po::variables_map vm; //variables map derived from std::map<std::string, variable_value>
     //cause vm to contain all the options found on the command line
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -208,6 +208,10 @@ int main(int argc, char **argv)
     {
         cout << desc << endl;
         throw runtime_error("input dataset, output file, number of blocks, the compression parameter and depth of a tree must be specified");
+    }
+    if (vm.count("threads"))
+    {
+        threads = vm["threads"].as<int>();
     }
     //No errors, save input parameters
     string input_folder = vm["input"].as<string>();
@@ -234,6 +238,11 @@ int main(int argc, char **argv)
     {
         cout << desc << endl;
         throw runtime_error("lambda must be at most depth");
+    }
+    if (threads < 1)
+    {
+        cout << desc << endl;
+        throw runtime_error("number of threads must be positive");
     }
     random_device rd;     //integer random number generator
     mt19937_64 gen(rd()); //random_device implements the mt19937_64 64-bit number generator
@@ -343,10 +352,10 @@ int main(int argc, char **argv)
         }
         total += num_reduced_edges * t;
     }
-    threads = 4;
     vector<int> counters(threads, 0);
     vector<double> distortions(threads, 0.0);
-    cout << "Starting nearest neighbor search..." << endl;
+    cout << "Starting nearest neighbor search." << endl;
+    cout << "Running on " << threads << " threads..." << endl;
     thread compare_threads[threads];
     int t_start = 0, m = q/threads, t_end = m;
     for(int i = 0; i < threads; ++i)
@@ -354,7 +363,14 @@ int main(int argc, char **argv)
         compare_threads[i] = 
             thread(run_nn, t_start, t_end, queries, answers, ref(counters), ref(distortions), i);
         t_start = t_end;
-        t_end += m; 
+        if (i == threads-2)
+        {
+            t_end = q;
+        }
+        else
+        {
+            t_end += m; 
+        }
     }
     for (int i=0; i<threads; i++){
         compare_threads[i].join();

@@ -363,7 +363,7 @@ int main(int argc, char **argv)
         compare_threads[i] = 
             thread(run_nn, t_start, t_end, queries, answers, ref(counters), ref(distortions), i);
         t_start = t_end;
-        if (i == threads-2)
+        if (i == threads-2) //countermeasure for uneven threads
         {
             t_end = q;
         }

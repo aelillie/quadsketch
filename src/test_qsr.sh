@@ -14,10 +14,6 @@ THREADS=$3
 
 for (( b=2; b<=32; b*=2 ))
 do
-    #if (( b == 16 ))
-    #then
-    #    continue;
-    #fi
     for (( d=2; d<=10; d++ ))
     do
         for (( l=1; l<$d; l++ ))

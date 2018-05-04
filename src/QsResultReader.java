@@ -4,15 +4,15 @@ public class QsResultReader{
     private String[] files;
     public ArrayList<QsResult> results;
 
-    public ArrayList<String> getFileNames(){
-        File folder = new File("./");
+    public ArrayList<String> getFileNames(String path){
+        File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
         ArrayList<String> filenames = new ArrayList<>();
         for (int i = 0; i < listOfFiles.length; i++) {
             File file = listOfFiles[i];
             if (file.isFile()) {
                 if(file.getName().endsWith(".txt")){
-                    filenames.add(listOfFiles[i].getName());
+                    filenames.add(listOfFiles[i].getAbsolutePath());
                 }    
             }
         }
@@ -29,7 +29,7 @@ public class QsResultReader{
             
                 while (line != null) {
                     sb.append(line + " ");
-                    sb.append(System.lineSeparator());
+                    //sb.append(System.lineSeparator());
                     line = br.readLine();
                 }
                 System.out.println("Processing file: " + file);
@@ -47,10 +47,10 @@ public class QsResultReader{
                     Integer.parseInt(everythingSplit[7]),
                     Integer.parseInt(everythingSplit[9]),
                     Double.parseDouble(everythingSplit[11]),
-                    Integer.parseInt(everythingSplit[16]),
-                    Double.parseDouble(everythingSplit[14]),
-                    Double.parseDouble(everythingSplit[18]),
-                    Double.parseDouble(everythingSplit[20])
+                    Integer.parseInt(everythingSplit[15]),
+                    0.0,
+                    Double.parseDouble(everythingSplit[17]),
+                    Double.parseDouble(everythingSplit[19])
                 );
                 
                 results.add(res);

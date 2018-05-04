@@ -292,7 +292,7 @@ int main(int argc, char **argv)
         {
             distortion += 1.0;
             ++counter;
-            cout << "+" << flush;
+            //cout << "+" << flush;
         }
         else
         {
@@ -300,11 +300,11 @@ int main(int argc, char **argv)
             if (who == answers[i][0])
             {
                 ++counter;
-                cout << "+" << flush;
+                //cout << "+" << flush;
             }
             else
             {
-                cout << "-" << flush;
+                //cout << "-" << flush;
             }
         }
     }

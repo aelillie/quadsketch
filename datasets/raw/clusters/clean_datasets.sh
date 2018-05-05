@@ -1,2 +1,2 @@
 #!/bin/bash
-rm answers.dat dataset.dat queries.dat
+rm ../../clusters/answers.dat ../../clusters/dataset.dat ../../clusters/queries.dat

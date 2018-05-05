@@ -16,11 +16,11 @@ using namespace std::chrono;
 using namespace ir;
 namespace po = boost::program_options;
 
-size_t n;
-int d;
-int c = 4;
-float min_value;
-float max_value;
+size_t n; //#points
+int d; //Dimensions
+const int c = 4; //Number of clusters
+float min_value; //Minimum value in whole dataset
+float max_value; //Maximum value in whole dataset
 default_random_engine gen;
 
 size_t num_queries;
@@ -87,6 +87,8 @@ void gen_rand_point(Point &p,
 {
     for(int i = 0; i<d; ++i)
     {
+        //Generate random coordinates in different ranges, 
+        //as defined by the distributors
         if (i < d/2)
         {
             p[i] = dist1(gen);
@@ -103,7 +105,7 @@ void gen_datapoints(vector<Point> &dataset,
                 normal_distribution<float> &dist1,
                 normal_distribution<float> &dist2)
 {
-    
+    //Generate a range of random points
     for(int i = start; i<end; ++i)
     {
         Point p(d);
@@ -125,35 +127,6 @@ void generate_queries(vector<Point> *dataset,
     }
 }
 
-// void generate_answers(const vector<Point> &dataset,
-//                       const vector<Point> &queries,
-//                       vector<vector<uint32_t>> *answers) {
-//     vector<pair<float, uint32_t>> scores(dataset.size());
-//     greater<pair<float, uint32_t>> comparator;
-//     answers->resize(queries.size());
-//     size_t outer_counter = 0;
-//     for (const auto &query: queries) {
-//         size_t inner_counter = 0;
-//         for (const auto &data_point: dataset) {
-//             float score = query.dot(data_point);
-//             scores[inner_counter] = make_pair(score, inner_counter);
-//             ++inner_counter;
-//         }
-//         nth_element(scores.begin(), scores.begin() + K - 1, scores.end(), comparator);
-//         sort(scores.begin(), scores.begin() + K, comparator);
-//         (*answers)[outer_counter].resize(K);
-//         cout << outer_counter << ": " << flush;
-//         for (size_t i = 0; i < K; ++i) {
-//             (*answers)[outer_counter][i] = scores[i].second;
-//             cout << i << ":" << scores[i].second << ", " << flush;
-//         }
-//         cout << endl;
-//         ++outer_counter;
-//         if (outer_counter % 100 == 0) {
-//             cout << outer_counter << "/" << queries.size() << endl;
-//         }
-//     }
-// }
 void generate_answers(const vector<Point> &dataset,
                       const vector<Point> &queries,
                       vector<vector<uint32_t>> *answers) {
@@ -170,13 +143,9 @@ void generate_answers(const vector<Point> &dataset,
         nth_element(scores.begin(), scores.begin() + K - 1, scores.end());
         sort(scores.begin(), scores.begin() + K);
         (*answers)[outer_counter].resize(K);
-        // cout << outer_counter << ": " << flush;
         for (size_t i = 0; i < K; ++i) {
             (*answers)[outer_counter][i] = scores[i].second;
-            // cout << i << ":" << scores[i].second << ", " << flush;
-            //cout << dataset[scores[i].second].dot(query) / query.norm() / dataset[scores[i].second].norm() << " ";
         }
-        // cout << endl;
         ++outer_counter;
         if (outer_counter % 100 == 0) {
             cout << outer_counter << "/" << queries.size() << endl;
@@ -199,6 +168,8 @@ void print_dataset(const vector<Point> &dataset)
     cout << endl;
 }
 
+//Verifies that the answers are properly generated
+//by doing a basic nearest-neighbor search
 void test_gen(vector<Point> &dataset,
               const vector<Point> &queries,
               vector<vector<uint32_t>> &answers)
@@ -212,67 +183,22 @@ void test_gen(vector<Point> &dataset,
     {
         float best_score = numeric_limits<float>::infinity();
         int who = -1;
-        // for(int z = 0; z<d; ++z)
-        // {
-        //     cout << dataset[n - q + i][z] << " " << flush;
-        // }
-        // cout << endl;
         for (int j = 0; j < n - q; ++j)
         {
             float score = (dataset[j] - dataset[n - q + i]).squaredNorm();
-            // cout << "score " << j << ": " << score << ", " << flush;
             if (score < best_score)
             {
                 best_score = score;
                 who = j;
             }
         }
-        // cout << endl;
-        // cout << i << ", who: " << who << endl;
-        float dd = (dataset[answers[i][0]] - queries[i]).norm();
-        if (dd < 1e-3)
-        {
-            // distortion += 1.0;
-            // ++counter;
-            cout << "+" << flush;
-        }
-        else
-        {
-            // distortion += (dataset[who] - queries[i]).norm() / (dataset[answers[i][0]] - queries[i]).norm();
-            if (who == answers[i][0])
+        if (who != answers[i][0])
             {
-                // ++counter;
-                cout << "+" << flush;
+                cout << "Not right answer for query " << i << endl;
+                cout << "Expected " << answers[i][0] << ", got " << who << endl;
             }
-            else
-            {
-                cout << "-" << flush;
-            }
-        }
     }
 }
-
-// int step1(vector<Point> &dataset) 
-// {
-//     try {
-//         cout << "writing dataset" << endl;
-//         serialize("dataset.dat", dataset);
-//         cout << "done" << endl;
-//     }
-//     catch (runtime_error &e) {
-//         cerr << "runtime error: " << e.what() << endl;
-//         return 1;
-//     }
-//     catch (exception &e) {
-//         cerr << "exception: " << e.what() << endl;
-//         return 1;
-//     }
-//     catch (...) {
-//         cerr << "Unknown error" << endl;
-//         return 1;
-//     }
-//     return 0;
-// }
 
 int gen_datasets(vector<Point> &dataset, vector<Point> &queries, vector<vector<uint32_t>> &answers)
 {
@@ -283,11 +209,11 @@ int gen_datasets(vector<Point> &dataset, vector<Point> &queries, vector<vector<u
         cout << queries.size() << " points generated" << endl;
 
         cout << "writing queries" << endl;
-        serialize("queries.dat", queries);
+        serialize("../clusters/queries.dat", queries);
         cout << "done" << endl;
-
+        //Note that the query points are removed from dataset at this point
         cout << "writing dataset" << endl;
-        serialize("dataset.dat", dataset);
+        serialize("../clusters/dataset.dat", dataset);
         cout << "done" << endl;
 
         cout << "generating answers" << endl;
@@ -296,11 +222,8 @@ int gen_datasets(vector<Point> &dataset, vector<Point> &queries, vector<vector<u
         cout << answers.size() << " points generated" << endl;
         
         cout << "writing answers" << endl;
-        serialize("answers.dat", answers);
+        serialize("../clusters/answers.dat", answers);
         cout << "done" << endl;
-
-        // cout << "Dataset:" << endl;
-        // print_dataset(dataset);
         
         test_gen(dataset, queries, answers);
     }
@@ -345,16 +268,9 @@ int main(int argc, char **argv)
     gen_datapoints(dataset, n/2    , (n*3)/4     , max_distr, min_distr);
     gen_datapoints(dataset, (n*3)/4, n           , max_distr, max_distr);
 
-    // cout << "Dataset:" << endl;
-    // print_dataset(dataset);
-
     vector<Point> queries;
     vector<vector<uint32_t>> answers;
     gen_datasets(dataset, queries, answers);
-
-    // cout << "Queries:" << endl;
-    // print_dataset(queries);
-
 
     return 0;
 }

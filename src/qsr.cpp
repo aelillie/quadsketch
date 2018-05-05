@@ -8,13 +8,16 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <thread>
 
 using namespace std;
 using namespace std::chrono;
 using namespace ir;
 namespace po = boost::program_options;
 
+vector<Point> dataset;
 vector<Point> new_dataset;
+int threads = 4;
 
 void solve(const vector<Point> &dataset, //initally the complete input dataset
            int b1, //block start
@@ -32,7 +35,6 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
            int long_edge_length, //initially 0
            int lambda)
 {
-    int n = dataset.size();
     int d = b2 - b1; //block length
     int dd = d / 8; //divide block
     if (d % 8) //check if there is excess space
@@ -61,20 +63,17 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
         mm.push_back((x.first + x.second) / 2.0);
     }
     map<vector<uint8_t>, vector<int>> parts;
-    //Make splitting of the points, based
-    //on if they are below or above random point
     for (auto x : who)
     {
         vector<uint8_t> code(dd, 0);
         for (int j = 0; j < d; ++j)
         {
             if (dataset[x][b1 + j] < mm[j])
-            { 
+            { //Why empty if-body!?!?
             }
             else
             {
-                //adds a bit from right to left
-                code[j / 8] |= 1 << (j % 8);
+                code[j / 8] |= 1 << (j % 8); //bitwise magic
             }
         }
         parts[code].push_back(x);
@@ -83,8 +82,6 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
     {
         vector<pair<float, float>> newbb(bb.size());
         Point new_p(cur);
-        //Create a new random point based on the prior,
-        //and assign new leaf values if necessary
         for (int j = 0; j < d; ++j)
         {
             newbb[j] = bb[j];
@@ -93,6 +90,10 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
                 newbb[j].first = mm[j];
                 if (long_edge_length >= lambda && parts.size() == 1)
                 {
+                    if (rand()%2)
+                    {
+                        new_p[j] += 1.0 / (2.0 * (1 << depth));
+                    }
                     continue;
                 }
                 new_p[j] += 1.0 / (2.0 * (1 << depth));
@@ -105,7 +106,7 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
         (*dfs_size) += 2 + d;
         (*reduced_dfs_size) += 2;
         if (long_edge_length >= lambda && parts.size() == 1)
-        { 
+        { //yet another empty if?!?
         }
         else
         {
@@ -134,11 +135,65 @@ void solve(const vector<Point> &dataset, //initally the complete input dataset
     }
 }
 
+void run_nn(int start, int end, 
+            const vector<Point> &queries, 
+            const vector<vector<uint32_t>> answers,
+            vector<int> &counter, 
+            vector<double> &distortion, 
+            int t)
+{
+    cout << "Thread " << t << " start" << endl;
+    int q = queries.size(), n = dataset.size();
+    for (int i = start; i < end; ++i)
+    {
+        /* Find nearest neighbor to query point */
+        float best_score = 1e100;
+        uint32_t who = -1;
+        for (int j = 0; j < n - q; ++j)
+        {
+            float score = (new_dataset[j] - new_dataset[n - q + i]).squaredNorm();
+            if (score < best_score)
+            {
+                best_score = score;
+                who = j;
+            }
+        }
+
+        /* Check if the query point is actually already in 
+        the original dataset, within some delta precision
+        answers[i][0] is the true nearest neighbor, while
+        answers[i][1...K] are the K nearest neighbors(sorted) */
+        float dd = (dataset[answers[i][0]] - queries[i]).norm();
+        if (dd < 1e-3)
+        {
+            distortion[t] += 1.0; //No distortion, as it is the same
+            counter[t]++;         //Perfect accuracy
+            //cout << "=" << flush;
+        }
+        /*otherwise, we check if the compressed nearest neighbor
+         is the true nearest neighbor */
+        else
+        {
+            distortion[t] += (dataset[who] - queries[i]).norm() / (dataset[answers[i][0]] - queries[i]).norm();
+            if (who == answers[i][0]) //The indices match, this it is a hit
+            {
+                counter[t]++;
+                //cout << "+" << flush;
+            }
+            else //The compressed NN was incorrect
+            {
+                //cout << "-" << flush;
+            }
+        }
+    }
+    cout << "Thread " << t << " end. " << endl;
+}
+
 int main(int argc, char **argv)
 {
     //Description of arguments
     po::options_description desc("Allowed options");
-    desc.add_options()("help,h", "print usage message")("input,i", po::value<string>(), "input dataset")("output,o", po::value<string>(), "output file")("depth,d", po::value<int>(), "depth of a tree")("num_blocks,n", po::value<int>(), "number of blocks")("lambda,l", po::value<int>(), "compression parameter")("num_queries,q", po::value<int>(), "number of queries used for evaluation");
+    desc.add_options()("help,h", "print usage message")("input,i", po::value<string>(), "input dataset")("output,o", po::value<string>(), "output file")("depth,d", po::value<int>(), "depth of a tree")("num_blocks,n", po::value<int>(), "number of blocks")("lambda,l", po::value<int>(), "compression parameter")("num_queries,q", po::value<size_t>(), "number of queries used for evaluation")("threads,t", po::value<int>(), "number of threads");
     po::variables_map vm; //variables map derived from std::map<std::string, variable_value>
     //cause vm to contain all the options found on the command line
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -154,9 +209,13 @@ int main(int argc, char **argv)
         cout << desc << endl;
         throw runtime_error("input dataset, output file, number of blocks, the compression parameter and depth of a tree must be specified");
     }
+    if (vm.count("threads"))
+    {
+        threads = vm["threads"].as<int>();
+    }
     //No errors, save input parameters
     string input_folder = vm["input"].as<string>();
-    string output_file = "../results/" + vm["output"].as<string>();
+    string output_file = "../dataAnalysis/" + vm["output"].as<string>();
     int num_blocks = vm["num_blocks"].as<int>();
     int depth = vm["depth"].as<int>();
     int lambda = vm["lambda"].as<int>();
@@ -180,9 +239,13 @@ int main(int argc, char **argv)
         cout << desc << endl;
         throw runtime_error("lambda must be at most depth");
     }
+    if (threads < 1)
+    {
+        cout << desc << endl;
+        throw runtime_error("number of threads must be positive");
+    }
     random_device rd;     //integer random number generator
     mt19937_64 gen(rd()); //random_device implements the mt19937_64 64-bit number generator
-    vector<Point> dataset;
     vector<Point> queries;
     vector<vector<uint32_t>> answers;
     //Populate data vectors
@@ -191,7 +254,7 @@ int main(int argc, char **argv)
     deserialize(input_folder + "/answers.dat", &answers); //Comparison data
     if (vm.count("num_queries"))
     {
-        int num_queries = vm["num_queries"].as<int>();
+        size_t num_queries = vm["num_queries"].as<size_t>();
         if (num_queries > queries.size())
         {
             cout << desc << endl;
@@ -220,6 +283,24 @@ int main(int argc, char **argv)
     }
     float delta = cmax - cmin; //delta range/"diameter" of hyper cube
     cmin -= delta;
+    //Find aspect ratio
+    // float lowest = 1e100, highest = -1e100;
+    // for(int i = 0; i<n; ++i) {
+    //     for (int j = i+1; j < n; ++j)
+    //     {
+    //         float score = (dataset[i] - dataset[j]).norm();
+    //         if (score < lowest)
+    //         {
+    //             lowest = score;
+    //         }
+    //         if (score > highest)
+    //         {
+    //             highest = score;
+    //         }
+    //     }
+    // }
+    // float a_r = highest/lowest;
+    float a_r = 0.0;
     uniform_real_distribution<float> u(0.0, delta); //returns random floating-point between 0.0 and delta
     //initialize int vector of same length as data set with index identity values
     vector<int> all(n);
@@ -261,7 +342,7 @@ int main(int argc, char **argv)
         int t = 0;
         while (1ll << t < num_leaves)
         {
-            ++t; //#branches from root
+            ++t;
         }
         total += n * t;
         t = 0;
@@ -271,58 +352,46 @@ int main(int argc, char **argv)
         }
         total += num_reduced_edges * t;
     }
-    cout << total << endl;
-    int counter = 0;
-    double distortion = 0.0;
-    for (int i = 0; i < q; ++i)
+    vector<int> counters(threads, 0);
+    vector<double> distortions(threads, 0.0);
+    cout << "Starting nearest neighbor search." << endl;
+    cout << "Running on " << threads << " threads..." << endl;
+    thread compare_threads[threads];
+    int t_start = 0, m = q/threads, t_end = m;
+    for(int i = 0; i < threads; ++i)
     {
-        float best_score = 1e100;
-        int who = -1;
-        for (int j = 0; j < n - q; ++j)
+        compare_threads[i] = 
+            thread(run_nn, t_start, t_end, queries, answers, ref(counters), ref(distortions), i);
+        t_start = t_end;
+        if (i == threads-2) //countermeasure for uneven threads
         {
-            float score = (new_dataset[j] - new_dataset[n - q + i]).squaredNorm();
-            if (score < best_score)
-            {
-                best_score = score;
-                who = j;
-            }
-        }
-        float dd = (dataset[answers[i][0]] - queries[i]).norm();
-        if (dd < 1e-3)
-        {
-            distortion += 1.0;
-            ++counter;
-            cout << "+" << flush;
+            t_end = q;
         }
         else
         {
-            distortion += (dataset[who] - queries[i]).norm() / (dataset[answers[i][0]] - queries[i]).norm();
-            if (who == answers[i][0])
-            {
-                ++counter;
-                cout << "+" << flush;
-            }
-            else
-            {
-                cout << "-" << flush;
-            }
+            t_end += m; 
         }
     }
-    cout << endl;
-    cout << "Counts per query: " << (counter + 0.0) / (q + 0.0) << endl;
-    cout << "distortion " << (distortion + 0.0) / (q + 0.0) << endl;
-    ofstream output(output_file);
-    //output order relevant for automatic read of generated files. 
-    output << "method qs" << endl;
-    output << "dataset " << input_folder << endl;
-    output << "num_blocks " << num_blocks << endl;
-    output << "depth " << depth << endl;
-    output << "lambda " << lambda << endl;
-    output << "size " << total << endl;
-    output << "delta " << delta << endl;
-    output << "dim " << d << endl;
-    output << "nn_accuracy " << (counter + 0.0) / (q + 0.0) << endl;
-    output << "distortion " << (distortion + 0.0) / (q + 0.0) << endl;
+    for (int i=0; i<threads; i++){
+        compare_threads[i].join();
+    }
+    cout << "Done" << endl;
+    int counter = 0;
+    double distortion = 0.0;
+    for(int i = 0; i<threads; ++i) {
+        counter += counters[i];
+        distortion += distortions[i];
+    }
+    double accuracy = (counter + 0.0) / (q + 0.0);
+    distortion /= q*1.0;
+    double bc = (total*1.0/((n*1.0)*(d*1.0)));
+    cout << "accuracy: " << accuracy << endl;
+    cout << "distortion: " << distortion<< endl;
+    cout << "aspect ratio: " << a_r << endl;
+    ofstream output(output_file, ios_base::app);
+    output << "qsr," << total << "," << lambda << "," << depth << "," << input_folder << "," 
+        << bc << "," << accuracy << "," << distortion << "," << d << "," << a_r << "," << num_blocks << endl;
     output.close();
+    //size,lambda,depth,dataset,B,accuracy,distortion,dim,aspectRatio,blocks
     return 0;
 }

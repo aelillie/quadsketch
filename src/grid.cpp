@@ -162,7 +162,14 @@ void compare(string output_file,
         compare_threads[i] = 
             thread(run_compare, start, end, queries, answers, ref(counters), ref(distortions), i);
         start = end;
-        end += m; 
+        if (i == threads-2) //Account for uneven threads
+        {
+            end = q;
+        }
+        else
+        {
+            end += m; 
+        }
     }
     for (int i=0; i<threads; i++){
         compare_threads[i].join();
@@ -278,7 +285,14 @@ int main(int argc, char **argv)
     {
         grid_threads[i] = thread(run_grid, start, end, marks);
         start = end;
-        end += m; 
+        if (i == threads-2) //Account for uneven threads
+        {
+            end = d;
+        }
+        else
+        {
+            end += m; 
+        }
     }
     for (int i=0; i<threads; i++){
         grid_threads[i].join();

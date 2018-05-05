@@ -1,8 +1,9 @@
+#include "serialize.h"
+
 #include <iostream>
 #include <string>
 #include <random>
 #include <boost/program_options.hpp>
-#include "serialize.h"
 #include <chrono>
 #include <stdexcept>
 #include <vector>
@@ -10,6 +11,7 @@
 #include <functional>
 #include <algorithm>
 #include <limits>
+#include <fstream>
 
 using namespace std;
 using namespace std::chrono;
@@ -21,6 +23,7 @@ int d; //Dimensions
 const int c = 4; //Number of clusters
 float min_value; //Minimum value in whole dataset
 float max_value; //Maximum value in whole dataset
+float aspect_ratio;
 default_random_engine gen;
 
 size_t num_queries;
@@ -132,6 +135,7 @@ void generate_answers(const vector<Point> &dataset,
                       vector<vector<uint32_t>> *answers) {
     vector<pair<float, uint32_t>> scores(dataset.size());
     answers->resize(queries.size());
+    float max_score = -1, min_score = numeric_limits<float>::infinity();
     size_t outer_counter = 0;
     for (const auto &query: queries) {
         size_t inner_counter = 0;
@@ -139,6 +143,14 @@ void generate_answers(const vector<Point> &dataset,
             float score = (query - data_point).squaredNorm();
             scores[inner_counter] = make_pair(score, inner_counter);
             ++inner_counter;
+            if (score < min_score)
+            {
+                min_score = score;
+            }
+            if (score > max_score)
+            {
+                max_score = score;
+            }
         }
         nth_element(scores.begin(), scores.begin() + K - 1, scores.end());
         sort(scores.begin(), scores.begin() + K);
@@ -151,6 +163,7 @@ void generate_answers(const vector<Point> &dataset,
             cout << outer_counter << "/" << queries.size() << endl;
         }
     }
+    aspect_ratio = max_score/min_score;
 }
 
 void print_dataset(const vector<Point> &dataset)
@@ -175,6 +188,7 @@ void test_gen(vector<Point> &dataset,
               vector<vector<uint32_t>> &answers)
 {
     int q = queries.size();
+    int size = n-q;
     for(auto x : queries)
     {
         dataset.push_back(x);
@@ -182,10 +196,10 @@ void test_gen(vector<Point> &dataset,
     for (int i = 0; i < q; ++i)
     {
         float best_score = numeric_limits<float>::infinity();
-        int who = -1;
-        for (int j = 0; j < n - q; ++j)
+        uint32_t who = -1;
+        for (int j = 0; j < size; ++j)
         {
-            float score = (dataset[j] - dataset[n - q + i]).squaredNorm();
+            float score = (dataset[j] - dataset[size + i]).squaredNorm();
             if (score < best_score)
             {
                 best_score = score;
@@ -205,27 +219,27 @@ int gen_datasets(vector<Point> &dataset, vector<Point> &queries, vector<vector<u
     try {
         cout << "generating queries" << endl;
         generate_queries(&dataset, &queries);
-        cout << "done" << endl;
         cout << queries.size() << " points generated" << endl;
 
         cout << "writing queries" << endl;
-        serialize("../clusters/queries.dat", queries);
+        serialize("../../clusters/queries.dat", queries);
         cout << "done" << endl;
         //Note that the query points are removed from dataset at this point
         cout << "writing dataset" << endl;
-        serialize("../clusters/dataset.dat", dataset);
+        serialize("../../clusters/dataset.dat", dataset);
         cout << "done" << endl;
 
         cout << "generating answers" << endl;
         generate_answers(dataset, queries, &answers);
-        cout << "done" << endl;
         cout << answers.size() << " points generated" << endl;
         
         cout << "writing answers" << endl;
-        serialize("../clusters/answers.dat", answers);
+        serialize("../../clusters/answers.dat", answers);
         cout << "done" << endl;
         
+        cout << "Testing dataset..." << endl;
         test_gen(dataset, queries, answers);
+        cout << "Done testing" << endl;
     }
     catch (runtime_error &e) {
         cerr << "runtime error: " << e.what() << endl;
@@ -248,16 +262,18 @@ int main(int argc, char **argv)
     {
         return 0;
     }
+    float range = max_value - min_value;
+    float min_mean = min_value + range/8;
+    float max_mean = max_value - range/8;
+
     cout << "n: " << n << endl;
     cout << "d: " << d << endl;
     cout << "min: " << min_value << endl;
     cout << "max: " << max_value << endl;
-    float range = max_value - min_value;
     cout << "range: " << range << endl;
-    float min_mean = min_value + range/8;
     cout << "min_mean: " << min_mean << endl;
-    float max_mean = max_value - range/8;
-    cout << "max_mean: " << max_mean << endl;
+    cout << "max_mean: " << max_mean << endl;  
+
     normal_distribution<float> min_distr(min_mean, range/8);
     normal_distribution<float> max_distr(max_mean, range/8);
 
@@ -271,6 +287,19 @@ int main(int argc, char **argv)
     vector<Point> queries;
     vector<vector<uint32_t>> answers;
     gen_datasets(dataset, queries, answers);
+
+    string filename = "clusters_n-"+to_string(n)+"_d-"+to_string(d)+"_phi-"+to_string(aspect_ratio);
+    ofstream output(filename);
+    output << "n: " << n << endl;
+    output << "d: " << d << endl;
+    output << "aspect ratio: " << aspect_ratio << endl;    
+    output << "min value: " << min_value << endl;
+    output << "max value: " << max_value << endl;
+    output << "range: " << range << endl;
+    output << "min centroid: " << min_mean << endl;
+    output << "max centroid: " << max_mean << endl;    
+    output << "stddev: " << range/8 << endl;
+    output.close();
 
     return 0;
 }

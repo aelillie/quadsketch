@@ -1,0 +1,11 @@
+method,dataset,landmarks,accuracy,distortion,bits/coord
+grid,../datasets/clusters,2,0.0008,1.91826,1
+grid,../datasets/clusters,4,0.0027,1.17377,2
+grid,../datasets/clusters,8,0.0497,1.08545,3
+grid,../datasets/clusters,16,0.2591,1.02658,4
+grid,../datasets/clusters,32,0.5356,1.00712,5
+grid,../datasets/clusters,64,0.7451,1.00181,6
+grid,../datasets/clusters,128,0.8658,1.00047,7
+grid,../datasets/clusters,256,0.9333,1.00011,8
+grid,../datasets/clusters,512,0.9656,1.00003,9
+grid,../datasets/clusters,1024,0.9835,1.00001,10

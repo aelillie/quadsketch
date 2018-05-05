@@ -6,7 +6,8 @@ public class TestRunner {
 
     public static void main(String[] args) {
         int depth = 10;
-        for (int block = 32; block <= 32; block=block*2){
+        int[] blocks = new int[]{7,14,28};
+        for (int block : blocks) {
             for(int lambda = 1; lambda < depth; lambda++){
                 try {
                     int numberOfWorkers = depth-lambda;

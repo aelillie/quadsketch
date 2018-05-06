@@ -224,7 +224,7 @@ int main(int argc, char **argv)
     }
     //No errors, save input parameters
     string input_folder = vm["input"].as<string>();
-    string output_file = "grid_results/" + vm["output"].as<string>();
+    string output_file = "../dataAnalysis/" + vm["output"].as<string>();
     landmarks = vm["landmarks"].as<uint16_t>();
     if (landmarks <= 0)
     {

@@ -2,11 +2,11 @@ import java.io.*;
 
 public class TestRunner {
 
-    private static String initArg = "-i ../datasets/sift -o sift_resultsB*D#L!.txt -n * -d # -l !";
+    private static String initArg = "-i ../datasets/clusters -o clusters_resultsB*D#L!.txt -n * -d # -l !";
 
     public static void main(String[] args) {
         int depth = 10;
-        int[] blocks = new int[]{2,4,32};
+        int[] blocks = new int[]{2,4,8,16,32};
         for (int block : blocks) {
             for(int lambda = 1; lambda < depth; lambda++){
                 try {

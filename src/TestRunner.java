@@ -6,7 +6,7 @@ public class TestRunner {
 
     public static void main(String[] args) {
         int depth = 10;
-        int[] blocks = new int[]{2,4,8,16,32};
+        int[] blocks = new int[]{32};
         for (int block : blocks) {
             for(int lambda = 1; lambda < depth; lambda++){
                 try {

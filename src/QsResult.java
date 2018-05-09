@@ -32,9 +32,11 @@ public class QsResult {
     private double bytesMaxDataset(){
         int sift = 1_010_000; 
         int mnist = 60_000;
+        int clusters = 1_000_000;
         switch(this.dataset){
             case "../datasets/sift": return sift * 128;
             case "../datasets/mnist": return mnist * 784;
+            case "../datasets/clusters": return clusters * 128;
             default : return -1.0;
         }
     }

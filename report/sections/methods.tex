@@ -2,14 +2,19 @@
 \label{methods}
 %From ILO:
 %"Plan and carry out a small-scale investigation of an algorithmic research problem. This investigation could be theoretical, experimental, or both."
-This section will cover the methods used throughout the project and attempt to reason about these. The motivation behind each method is to support the problem definition and the analysis of the \qs{} implementation. The analysis consists of verifying the correctness of the stated results and applying the implementation with other data inputs to verify the relation between \qs{} and the baseline. Furthermore a number of practical tests are conducted to research possible performance gains.
+This section will cover the methods used throughout the project for conducting the experiments and reaching the goals reported in later sections. An implementation of \qs{} is found on a GitHub repository by Tal Wagner\footnote{https://github.com/talwagner/quadsketch}(one of the authors of \cite{wagner17}) accompanied by SIFT, MNIST, and a "glove" dataset. As such, the NYC Taxi and Diagonal datasets are not included, although they use these in their experiments. This repository has been forked on GitHub and used for carrying out experiments\footnote{https://github.com/aelillie/quadsketch}. As the experiments also require a baseline comparison algorithm, a version of what they describe as "Grid" has been implemented. The methods used for the verification process are described in \ref{experiment_verification}. Furthermore a synthetic dataset has been generated for experimenting with the \qsr{} contribution. The methods used in these experiments are described in \ref{possible_improvements}.  
+%The motivation behind each method is to support the problem definition and the analysis of the \qs{} implementation. The analysis consists of verifying the correctness of the stated results and applying the implementation with other data inputs to verify the relation between \qs{} and the baseline. Furthermore a number of practical tests are conducted to research possible performance gains.
 
 \subsection{Experiment verification}
+\label{experiment_verification}
+Section \ref{baseline} describes the "Grid" baseline implementation, and its role in the experiments, while \ref{datasets} introduces the datasets used in the experiments.
 
 \subsubsection{Baseline comparison}
-The paper compares the \qs{} performance with other compression algorithms, including (\pq{}) and a simple baseline algorithm, \gr{}. In order to verify their results, a version of Grid has been implemented as baseline to use for replication experiments. The basic concept is to make a range of buckets over each dimension for the point set. Each point will have its value for a dimension reduced to the value of the bucket in which the points value lies. By doing so, the value of the point can be stored with fewer bits and thus compress the data set.
+\label{baseline}
+The paper compares the \qs{} performance with other compression algorithms, including (\pq{}) and a simple baseline algorithm, \gr{}. In order to properly assess the quality of the results for the \qs{} and \qsr{} algorithms, a version of Grid has been implemented as baseline to use for replication experiments. The basic concept is to make a number of \textit{landmarks} equally distributed over the range of each dimensions in the dataset. In the compression scheme, each point will for each dimension have its value rounded to the nearest landmark. By doing so, the value of the point is represented by \ensuremath{\log_2(l)} bits, where $l$ is the number of landmarks used.
 
-\subsubsection{Other datasets}
+\subsubsection{Datasets}
+\label{datasets}
 To ensure proper verification of the results for the \qs{}, the implementation and baseline is tested on another dataset not included in the paper. If the results from another dataset somewhat match the results given in the paper \cite{wagner17}, it will strengthen the credibility of the practical efficiency of the \qs{} implementation.
 \\
 \\
@@ -34,6 +39,7 @@ The properties of the datasets used for verification, as well as for experiments
 \end{table}
 
 \subsection{Experimenting with possible improvements}
+\label{possible_improvements}
 A number of experiments have been conducted in an attempt to improve \qs{}. The approaches and experiments will be elaborated below.
 %EMil vil gerne have "on" med
 \subsubsection{Random bits}

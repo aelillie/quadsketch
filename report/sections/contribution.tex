@@ -11,7 +11,7 @@ This project contributes with a verification of the results found in \cite{wagne
 	\label{table:avg_mnist_qs}
 	\begin{tabular}{ccccc}
 		\hline
-		\#Blocks & Bits per coordinate & Accuracy  & Average Distortion \\ \hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
 		2 & 3.431401618 & 0.442369565 & 1.100243043  \\
 		4 & 4.356745996 & 0.514935556 & 1.096021778  \\
 		7 & 3.748759663 & 0.533835556 & 1.097194 \\
@@ -29,7 +29,7 @@ This project contributes with a verification of the results found in \cite{wagne
 	\label{table:avg_mnist_qsr}
 	\begin{tabular}{ccccc}
 		\hline
-		\#Blocks & Bits per coordinate & Accuracy  & Average Distortion \\ \hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
 		2 & 3.791149556 & 0.545435556 & 1.117902889  \\
 		4 & 3.731631978 & 0.570762222 & 1.090473333  \\
 		7 & 3.2148296 & 0.615646667 & 1.062086 \\
@@ -47,7 +47,7 @@ This project contributes with a verification of the results found in \cite{wagne
 	\label{table:avg_sift_qs}
 	\begin{tabular}{ccccc}
 		\hline
-		\#Blocks & Bits per coordinate & Accuracy  & Average Distortion \\ \hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
 		2 & 4.315538194	& 0.488631111 & 1.121583556  \\
 		4 & 4.635345104 & 0.613071111 & 1.055850444  \\
 		8 & 4.393382276 & 0.69517027 & 1.033604324 \\
@@ -63,12 +63,44 @@ This project contributes with a verification of the results found in \cite{wagne
 	\label{table:avg_sift_qsr}
 	\begin{tabular}{ccccc}
 		\hline
-		\#Blocks & Bits per coordinate & Accuracy  & Average Distortion \\ \hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
 		2 & 4.325384667	& 0.518851111 & 1.111769111  \\
 		4 & 4.6295994 & 0.651095556 & 1.040538222  \\
 		8 & 5.015656956 & 0.765835556 & 1.018494444 \\
 		16 & 5.442561087 & 0.831104348 & 1.015347174 \\
 		32 & 5.676809778 & 0.793926667 & 1.020890222 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\caption{Average Results \clust{} \qs{}}
+	\label{table:avg_clust_qs}
+	\begin{tabular}{ccccc}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 4.272613829	& 0.305017778 & 1.084919778  \\
+		4 & 4.506985248 & 0.391806667 & 1.057562667  \\
+		8 & 4.970301394 & 0.487966667 & 1.034483111 \\
+		16 & 5.719025236 & 0.590073333 & 1.025546222 \\
+		32 & 5.752728007 & 0.570573469 & 1.035590612 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\caption{Average Results \clust{} \qsr{}}
+	\label{table:avg_clust_qsr}
+	\begin{tabular}{ccccc}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 4.261578222	& 0.329313333 & 1.079774  \\
+		4 & 4.499941667 & 0.421373333 & 1.048238222  \\
+		8 & 4.9704786 & 0.517408889 & 1.030564 \\
+		16 & 5.717358267 & 0.607028889 & 1.024993778 \\
+		32 & 6.078499333 & 0.627446667 & 1.025521333 \\
 		\hline
 	\end{tabular}
 \end{table}

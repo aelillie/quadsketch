@@ -11,6 +11,14 @@
 \usepackage[nottoc,numbib]{tocbibind} 
 \usepackage{mathpartir}
 \usepackage{mathtools}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset { 
+	language=C++,
+	%backgroundcolor=\color{black!5}, % set backgroundcolor
+	basicstyle=\footnotesize,% basic font setting
+	%numbers=left
+}
 
 %Commands
 \newcommand{\source}[1]{\caption*{Source: {#1}} }
@@ -87,6 +95,7 @@ This paper analyzes, experiment, and verifies the relatively new algorithm \qs{}
 \input{sections/background.tex}
 \input{sections/analysis.tex}
 \input{sections/methods.tex}
+\input{sections/qsr.tex}
 \input{sections/results.tex}
 \input{sections/discussion.tex}
 \input{sections/futurework.tex}

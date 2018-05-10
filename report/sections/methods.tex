@@ -9,18 +9,25 @@ This section will cover the methods used throughout the project for conducting t
 \label{experiment_verification}
 Section \ref{baseline} describes the "Grid" baseline implementation, and its role in the experiments, while \ref{datasets} introduces the datasets used in the experiments.
 
-\subsubsection{Baseline comparison}
+\subsubsection{Baseline comparison: \gr{}}
 \label{baseline}
-The paper compares the \qs{} performance with other compression algorithms, including (\pq{}) and a simple baseline algorithm, \gr{}. In order to properly assess the quality of the results for the \qs{} and \qsr{} algorithms, a version of Grid has been implemented as baseline to use for replication experiments. The basic concept is to make a number of \textit{landmarks} equally distributed over the range of each dimensions in the dataset. In the compression scheme, each point will for each dimension have its value rounded to the nearest landmark. By doing so, the value of the point is represented by \ensuremath{\log_2(l)} bits, where $l$ is the number of landmarks used.
+The paper compares the \qs{} performance with other compression algorithms, including (\pq{}) and a simple baseline algorithm, \gr{}. In order to properly assess the quality of the results for the \qs{} and \qsr{} algorithms, a version of Grid has been implemented in \texttt{grid.cpp} as baseline to use for replication experiments. The basic concept is to make a number of \textit{landmarks} equally distributed over the range of each dimension in the dataset. In the compression scheme, each point will for each dimension have its value rounded to the nearest landmark. By doing so, the value of the point is represented by $\log_2(l)$ bits, where $l$ is the number of landmarks used. A simple illustration of this is presented in figure \ref{landmarks}. The middle horizontal line represent a range of values from 1.0 to 2.0 in one dimension with six points (the colored lines). Above the horizontal line four landmarks are placed, which are represented with 2 bits. In this example the red coordinate would be rounded to 00, the blue and purple to 01, the green to 10, and the yellow to 11.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{figures/Landmarks.png}
+	\caption{Illustration of \gr{} in one dimension}
+	\label{landmarks}
+\end{figure}
 
 \subsubsection{Selected Datasets}
 \label{datasets}
-To ensure proper verification of the results for the \qs{}, the implementation and baseline is tested on another dataset not included in the paper. If the results from another dataset are equivalent to the results given in the paper \cite{wagner17}, it will strengthen the credibility of the practical efficiency of the \qs{} implementation.
+To ensure proper verification of the results for the \qs{}, the implementation and baseline is tested on two of the datasets used reported in the paper, namely SIFT and MNIST, as these were already available from their repository. Furthermore a synthetic dataset has been generated, both to test \qs{} on a different kind of dataset, but also for experimental reasons for \qsr{}, which is elaborated on in section \ref{clusters}. If the results from the experiments turn out to be equivalent or close to the results given in \cite{wagner17}, it will strengthen the credibility of the practical efficiency of \qs{}.
 \\
 \\
-Applying \qs{} to other datasets could provide some additional insight into how the properties of the datasets might impact the resulting sketch. These results could then be used to derive heuristics for \qs{} or set a standard for which parameters \qs{} should use.
+Applying \qs{} to other datasets could provide some additional insight into how the properties of the datasets might impact the resulting sketch. These results could then be used to e.g. derive heuristics for \qs{} or set a standard for which parameters \qs{} should use. This is further discussed in section \ref{futurework}.
 
-The properties of the datasets used for verification, as well as for experiments, are summarized in table \ref{tab:datasets}. The \clust{} dataset is further elaborated on in section \ref{clusters}.
+The properties of the datasets used for verification, as well as for experiments, are summarized in table \ref{tab:datasets}.
 
 \begin{table}[h]
 	\centering
@@ -40,19 +47,20 @@ The properties of the datasets used for verification, as well as for experiments
 
 \subsection{Experimenting with possible improvements}
 \label{possible_improvements}
-A number of experiments have been conducted in an attempt to improve \qs{}. The approaches and experiments will be elaborated below.
-%EMil vil gerne have "on" med
-\subsubsection{Random bits}
-This expirement focuses on the pruning step of the algorithm. Recall that in the pruning step \qs{} shifts each point in a quad towards the lower left corner by replacing existing bits with zero's. The alteration introduced in this expiriment moves each point in a qaud towards a random corner of that quad. More precisely, by not only introducing zero's into the bit string as replacement, this feature random valued bits into the bit string. This might improve the resulting sketch by pulling the point in an arbitraryt direction for each dimension rather than only distorting them in one direction.  This could potentially improve some scenarios of the sketch where the points are either . A visualization of this can be seen on figure \ref{fig:randombits}, where the transformation by \qs{} is referred to as QS, and the transformation by \qsr{} is referred to as QSR. In the graphical representation each point lies next to eachother if they are placed in the same corner, where in the actual transformation these will have the exact same coordinates. 
-\begin{figure}[h]
-	\includegraphics[width=1\textwidth]{figures/randombits}
-	\caption{Random Bit Demonstration}
-	\label{fig:randombits}
-\end{figure}
-The given example in figure \ref{fig:randombits} demonstrates a scenario where the expirement performs decently. It should be noted that the random movement of the points could also result in a worse representation. Such a scenario is described in \ref{disc/threats/randomness}.
-\\
-\\
-The motivation of this expirement stems from the creation of the random quad tree in \qs{}. Should the creation of this quadtree accidentaly quad through closely clustered points then the distortion could be quite severe. By introducing randomness into the direction of the points, they might end up in corners closer to each other and thereby reduce the amount of distortion.  
+A number of experiments have been conducted in an attempt to improve \qs{}. The approaches and experiments will be elaborated on below.
+
+\subsubsection{Finding improvements}
+\label{finding_improvements}
+The paper under investigation, \cite{wagner17}, together with their implementation, \texttt{qs.cpp}, has been thoroughly studied in order to find something that might yield a practical improvement to their algorithm. Something that sounded interesting was the replacement of "non-important" bits with just zeros. Looking through the source code it seems like they don't build a "sketch" per se, which can be decompressed. Instead the \qt{} data structure is built, including the pruning step, where they directly don't add bits to represent a node, if it is on a \textit{long edge} path in the tree, i.e. a node whose bits omission would have little effect on the approximation quality\cite[p. 3, l. 14]{wagner17}. They do this on lines 73-76, where they check the condition for pruning, and if it is satisfied they break, otherwise they add a bit. The code is extracted and illustrated in the listing \ref{lst:qs} below:
+
+\begin{lstlisting}[caption={Pruning},label={lst:qs}]
+if (long_edge_length >= lambda && parts.size() == 1) {
+	continue;
+}
+new_p[j] += 1.0 / (2.0 * (1 << depth));
+\end{lstlisting}
+
+Experimenting with this code allowed for comparing the results to \qs{} and observe if it yielded any results. The implementation is described in \ref{qsr}.
 
 
 \subsubsection{Synthetic dataset: \clust{}}

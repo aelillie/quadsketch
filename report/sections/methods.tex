@@ -9,11 +9,11 @@ This section will cover the methods used throughout the project and attempt to r
 \subsubsection{Baseline comparison}
 The paper compares the \qs{} performance with other compression algorithms, including (\pq{}) and a simple baseline algorithm, \gr{}. In order to verify their results, a version of Grid has been implemented as baseline to use for replication experiments. The basic concept is to make a range of buckets over each dimension for the point set. Each point will have its value for a dimension reduced to the value of the bucket in which the points value lies. By doing so, the value of the point can be stored with fewer bits and thus compress the data set.
 
-\subsubsection{Other datasets}
-To ensure proper verification of the results for the \qs{}, the implementation and baseline is tested on another dataset not included in the paper. If the results from another dataset somewhat match the results given in the paper \cite{wagner17}, it will strengthen the credibility of the practical efficiency of the \qs{} implementation.
+\subsubsection{Selected Datasets}
+To ensure proper verification of the results for the \qs{}, the implementation and baseline is tested on another dataset not included in the paper. If the results from another dataset are equivalent to the results given in the paper \cite{wagner17}, it will strengthen the credibility of the practical efficiency of the \qs{} implementation.
 \\
 \\
-The choice of other datasets could provide some additional insight into how the properties of some dataset might impact the optimality of the parameters given to the \qs{}. It might be interesting to feed datasets with different properties to the \qs{}, as results may change from very sparse / spread out datasets to very dense datasets.
+Applying \qs{} to other datasets could provide some additional insight into how the properties of the datasets might impact the resulting sketch. These results could then be used to derive heuristics for \qs{} or set a standard for which parameters \qs{} should use.
 
 The properties of the datasets used for verification, as well as for experiments, are summarized in table \ref{tab:datasets}. The \clust{} dataset is further elaborated on in section \ref{clusters}.
 
@@ -23,8 +23,8 @@ The properties of the datasets used for verification, as well as for experiments
 		\hline
 		Dataset & Points & Dimensions & Aspect ratio ($\Phi$) \\
 		\hline
-		SIFT & 1,000,000 & 128 & $\geq$ 83.2 \\
-		MNIST & 60,000 & 784 & $\geq$ 9.2 \\
+		\sift{} & 1,000,000 & 128 & $\geq$ 83.2 \\
+		\mnist{} & 60,000 & 784 & $\geq$ 9.2 \\
 		\clust{} & 1,000,000 & 128 & 57.9 \\
 		%	GIST & 1,000,000 & 960 & $\geq$ 580 \\
 		\hline

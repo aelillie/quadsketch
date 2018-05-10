@@ -26,4 +26,36 @@ In the current state the \qs{} has been run with a range of parameters and the r
 In the pruning step bits are currently replaced with zero's. This effectively moves the pruned points in a certain direction and causes distortion. Instead of only introducing zero's into the bit string as replacement, inserting random bits might reduce the amount of distortion by pulling the point in different directions for each dimension rather than only distorting it in one direction. Another option could be to insert one's instead of zero's for certain datasets. 
 %TODO: Figur der viser hvordan 0'er trækker points i en retning
 
+
+\subsubsection{Synthetic dataset: \clust{}}
+A synthetic dataset has been generated, with the goal to illustrate a scenario where \qsr{} in practice \textit{should} perform better than \qs{}. It is called \clust{}, as it contains four clusters of rather dense data points in Euclidean space. The clusters' centroids are programmed to be in each "corner" of the dataset(i.e. far apart). A simple illustration of this is presented in figure \ref{fig:clusters}, showing four clusters with each three points in 2D space.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{figures/Clusters_example.png}
+	\caption{Example of \clust{} in 2D space}
+	\label{fig:clusters}
+\end{figure}
+
+
+\texttt{gen.cpp} is implemented to generate a dataset with such four clusters, taking as parameters the number of points, dimensions, and queries, as well as the minimum and maximum value in the dataset(which is the main factor for the resulting aspect ratio). The C++ library \texttt{normal\_distribution}\footnote{http://www.cplusplus.com/reference/random/normal\_distribution/} is used to randomly distribute the points in a cluster according to a \textit{normal distribution}, defined by a mean ($\mu$) with a specific standard deviation ($\sigma$). 
+
+The generated set used for testing has 1,000,000 points, 128 dimensions and a resulting aspect ratio ($\Phi$) of 57.9, obtained from a minimum value of 100 and a maximum value of 600. 10,000 points (1\% of the dataset) are extracted to make up the query points. \clust{} are generated from two \texttt{normal\_distribution} generators fed with mean values of 162.5 and 537.5 respectively, and both with a standard deviation of 62.5.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l l l l}
+	\hline
+	Dataset & Points & Dimensions & Aspect ratio ($\Phi$) \\
+	\hline
+	SIFT & 1,000,000 & 128 & $\geq$ 83.2 \\
+	MNIST & 60,000 & 784 & $\geq$ 9.2 \\
+	\clust{} & 1,000,000 & 128 & 57.9 \\
+%	GIST & 1,000,000 & 960 & $\geq$ 580 \\
+	\hline
+\end{tabular}
+\caption{Properties of the datasets}
+\label{tab:datasets}
+\end{table}
+
 \clearpage

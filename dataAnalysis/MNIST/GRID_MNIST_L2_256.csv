@@ -1,0 +1,16 @@
+method,dataset,landmarks,accuracy,distortion,bits/coord
+grid,../datasets/mnist,2,0.4095,1.06682,1
+grid,../datasets/mnist,4,0.6344,1.02078,2
+grid,../datasets/mnist,8,0.8225,1.00423,3
+grid,../datasets/mnist,16,0.9088,1.00096,4
+grid,../datasets/mnist,32,0.9604,1.00017,5
+grid,../datasets/mnist,64,0.9796,1.00005,6
+grid,../datasets/mnist,128,0.9892,1.00001,7
+grid,../datasets/mnist,256,0.9956,1,8
+grid,../datasets/mnist,3,0.5217,1.03753,1.58496
+grid,../datasets/mnist,6,0.7608,1.00821,2.58496
+grid,../datasets/mnist,12,0.8818,1.00178,3.58496
+grid,../datasets/mnist,24,0.9425,1.00037,4.58496
+grid,../datasets/mnist,48,0.9723,1.00009,5.58496
+grid,../datasets/mnist,96,0.9841,1.00003,6.58496
+grid,../datasets/mnist,192,0.9931,1,7.58496

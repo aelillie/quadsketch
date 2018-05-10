@@ -402,10 +402,17 @@ __pycache__/
 datasets/glove/
 datasets/mnist/
 datasets/sift/
+datasets/clusters/
 datasets/sift_subsample/
-results/
+datasets/glove.tar.gz
+datasets/mnist.tar.gz
+datasets/sift.tar.gz
+datasets/sift_subsample.tar.gz
 .vscode
 qs
+qsr
+grid
+gen
 
 
 # End of https://www.gitignore.io/api/c++,linux,macos,windows,visualstudio,visualstudiocode

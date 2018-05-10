@@ -1,0 +1,9 @@
+n: 1000000
+d: 128
+aspect ratio: 57.8567
+min value: 100
+max value: 600
+range: 500
+min centroid: 162.5
+max centroid: 537.5
+stddev: 62.5

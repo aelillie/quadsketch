@@ -19,31 +19,32 @@ Similarly as in \cite{wagner17} the \qs{} implementations has been parameterized
 %- Zoom in on narrow / close datasets
 \\
 \\
-The charts presented first displays results from the datasets \mnist{} and \sift{}. These results are key in verifying the results presented in \cite{wagner17}. Following this are the charts displaying results from \clust{} and \gist{}, as these disclose new information about the overall performance of \qs{}. Two graphs exists for each dataset displaying \textit{accuracy} and \textit{distortion} respectively.
-\begin{figure}[h]
-\includegraphics[width=0.5\textwidth]{figures/coding_graph}
-\includegraphics[width=0.5\textwidth]{figures/alcohol_graph}
+The charts presented below displays results from the dataset\sift{}, \mnist{}. These results are key in verifying the results presented in \cite{wagner17}. Following this are the charts displaying results from \clust{} and \gist{}, as these disclose new information about the overall performance of \qs{}. Two graphs exists for each dataset displaying \textit{accuracy} and \textit{distortion} respectively. The graphs display that \qs{} has a better performance than \grid{} and verifies the results presented from empirical experiments in \cite{wagner17}.
+
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{figures/graphs/sift_accuracy}
+\includegraphics[width=\textwidth]{figures/graphs/sift_distortion}
 \caption{Accuracy and distortion from \sift{}}
 \label{fig:graph sift}
 \end{figure}
-\clearpage{}
-The results from Figure \ref{fig:graph sift} verifies the original results of \qs{}, and establishes that it still outperforms the baseline method. Interestingly the \qsr{} implementation has fewer bad cases, which could indicate that on the..............
+The graphs in figure \ref{fig:graph sift} above show that in the best case scenario for \qs{} and \qsr{} are quite similar, while \qsr{} seems to be better in the average case.
 
-\begin{figure}[h]
-\includegraphics[width=0.5\textwidth]{figures/coding_graph}
-\includegraphics[width=0.5\textwidth]{figures/alcohol_graph}
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{figures/graphs/mnist_accuracy}
+\includegraphics[width=\textwidth]{figures/graphs/mnist_distortion}
 \caption{Accuracy and distortion from \mnist{}}
 \label{fig:graph mnist}
 \end{figure}
-Here we now describe our amazing results from mnist. Probably we will be rich from these results. If not, Erlich Bachmann will be very disappointed (remember, that Bakke still lives in his incubator). 
+\clearpage
+Figure \ref{fig:graph mnist} displays that \qsr{} runs are slightly superior to \qs{} in the best case regarding accuracy, and superior in regards to distortion. The average case for \qsr{} in distortion seems superior to the average case in \qs{}, but similar in regards to accuracy.
 
-\begin{figure}[h]
-\includegraphics[width=0.5\textwidth]{figures/coding_graph}
-\includegraphics[width=0.5\textwidth]{figures/alcohol_graph}
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{figures/graphs/clusters_accuracy}
+\includegraphics[width=\textwidth]{figures/graphs/clusters_distortion}
 \caption{Accuracy and distortion from \clust{}}
 \label{fig:graph clust}
 \end{figure}
-Here we now describe our amazing results from clust. With our incredible weismann score on 10.9, beating Richards score by a factor 4, we now should be able to build a new internet. However, if we are unlucky, Ying Yang will beat us to it....
+Figure \ref{fig:graph clust} shows that \qs{} and \qsr{} behaves similarly in best case runs for the clusters dataset. However the average case for \qsr{} is slightly superior to the \qs{} average results both regarding accuracy and distortion.
 \clearpage{}
 
 \begin{figure}[h]

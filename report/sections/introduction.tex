@@ -21,9 +21,9 @@ There are two main parameters controlling the performance of \qs{}. The first on
 \subsection{Problem definition} %What is our research question?
 %From ILO:
 %"Plan and carry out a small-scale investigation of an algorithmic research problem. This investigation could be theoretical, experimental, or both."
-\cite{wagner17} introduces the \qs{} algorithm, which competes with state of the art distance preserving compression algorithms. This paper investigates the performance complexity of \qs{} in terms of the parameters \textit{L} and $\Lambda$ and tries to introduce heuristics for improving or reducing their influence on the complexity. From \tm{2} they are defined as such: \\
+\cite{wagner17} introduces the \qs{} algorithm, which competes with state of the art distance preserving compression algorithms, \qs{} runs in \bos{NdL} time and produces a sketch of size \bo{nd$\Lambda$~+~n~log~n} bits\footnote{See Theorem 1 in \cite{wagner17}}. This paper investigates the validity of the results obtained in \cite{wagner17}, experiments on other datasets and attempts to improve the practical performance of \qs{}.
 
-$\Lambda$=\bo{$log(d\;\log\Phi/\epsilon)$}\\
+%$\Lambda$=\bo{$log(d\;\log\Phi/\epsilon)$}\\
 
-\ensuremath{L=\log \Phi + \Lambda}
+%\ensuremath{L=\log \Phi + \Lambda}
 

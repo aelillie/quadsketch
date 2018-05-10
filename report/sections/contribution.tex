@@ -2,6 +2,105 @@
 \label{contribution}
 %Short section about our final findings and contributions
 %This section describes the contributions given to \qs{} as the results for this project.
-This project contributes with a verification of the results found in \cite{wagner17} using \qs{}. Furthermore an extension of \qs{} called \qsr{} is a modification of the replacement approach used when bits are pruned from the dataset. Empirical experiments constitute a comparison of \qs{}, \grid{} and \qsr{} which show slight improvement from the \qs{}.
+This project contributes with a verification of the results found in \cite{wagner17} using \qs{}. Furthermore an extension of \qs{} called \qsr{} is implemented, where the decompression step has been modified. Instead of placing zeros for pruned points, which are deemed insignificant in the pruning step (called \textit{long edges} in the paper), a bit is inserted at random. Empirical experiments constitute a comparison of \qs{}, \grid{} and \qsr{} which show slight improvement from the latter over \qs{}.
 
 %TODO: add table with numbers of improvement !
+\begin{table}[h!]
+	\centering
+	\caption{Average Results \mnist{} \qs{}}
+	\label{table:avg_mnist_qs}
+	\begin{tabular}{ccccc}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 3.431401618 & 0.442369565 & 1.100243043  \\
+		4 & 4.356745996 & 0.514935556 & 1.096021778  \\
+		7 & 3.748759663 & 0.533835556 & 1.097194 \\
+		8 & 3.69316803 & 0.555815556 & 1.090394 \\
+		14 & 3.514198308 & 0.666457778 & 1.048070667 \\
+		16 & 3.447520114 & 0.691308889 & 1.039142444 \\
+		28 & 3.351639611 & 0.80766 & 1.013258889 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\caption{Average Results \mnist{} \qsr{}}
+	\label{table:avg_mnist_qsr}
+	\begin{tabular}{ccccc}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 3.791149556 & 0.545435556 & 1.117902889  \\
+		4 & 3.731631978 & 0.570762222 & 1.090473333  \\
+		7 & 3.2148296 & 0.615646667 & 1.062086 \\
+		8 & 3.164607822 & 0.63972 & 1.052425778 \\
+		14 & 3.0125182 & 0.743888889 & 1.023143333 \\
+		16 & 2.954859333 & 0.762051111 & 1.019534667 \\
+		28 & 2.874194133 & 0.848722222 & 1.008049333 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\caption{Average Results \sift{} \qs{}}
+	\label{table:avg_sift_qs}
+	\begin{tabular}{ccccc}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 4.315538194	& 0.488631111 & 1.121583556  \\
+		4 & 4.635345104 & 0.613071111 & 1.055850444  \\
+		8 & 4.393382276 & 0.69517027 & 1.033604324 \\
+		16 & 5.14896279 & 0.846907143 & 1.00786 \\
+		32 & 5.675025467 & 0.780888889 & 1.024971556 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\caption{Average Results \sift{} \qsr{}}
+	\label{table:avg_sift_qsr}
+	\begin{tabular}{ccccc}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 4.325384667	& 0.518851111 & 1.111769111  \\
+		4 & 4.6295994 & 0.651095556 & 1.040538222  \\
+		8 & 5.015656956 & 0.765835556 & 1.018494444 \\
+		16 & 5.442561087 & 0.831104348 & 1.015347174 \\
+		32 & 5.676809778 & 0.793926667 & 1.020890222 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\caption{Average Results \clust{} \qs{}}
+	\label{table:avg_clust_qs}	
+	\begin{tabular}{ccccc}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 4.272613829	& 0.305017778 & 1.084919778  \\
+		4 & 4.506985248 & 0.391806667 & 1.057562667  \\
+		8 & 4.970301394 & 0.487966667 & 1.034483111 \\
+		16 & 5.719025236 & 0.590073333 & 1.025546222 \\
+		32 & 5.752728007 & 0.570573469 & 1.035590612 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\caption{Average Results \clust{} \qsr{}}
+	\label{table:avg_clust_qsr}
+	\begin{tabular}{ccccc}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 4.261578222	& 0.329313333 & 1.079774  \\
+		4 & 4.499941667 & 0.421373333 & 1.048238222  \\
+		8 & 4.9704786 & 0.517408889 & 1.030564 \\
+		16 & 5.717358267 & 0.607028889 & 1.024993778 \\
+		32 & 6.078499333 & 0.627446667 & 1.025521333 \\
+		\hline
+	\end{tabular}
+\end{table}

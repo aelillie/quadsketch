@@ -3,12 +3,20 @@
 This section discusses the findings presented in \ref{results}.
 
 \subsection{Verification of Performance}
-It should be briefly mentioned that \qs{} performs as expected above the baseline \grid{} implementation on all datasets, and the nature of the graphs behave as can be seen in \cite{wagner17}. The outliers that can be seen in the dataset are the result of running \qs{} and \qsr{} with inappropriate parameters. The accuracy and distortion of the sketch is controlled by \textit{L} and $\Lambda$ which the results confirm as well. 
+The results in figures \ref{fig:graph sift} and \ref{fig:graph mnist} are used for verifying the results presented in \cite{wagner17}. \cite{wagner17} showed \qs{} can out perform the baseline algorithm \grid{} for the datasets \sift{} and \mnist{} in regards to both accuracy and distortion. Both figures show \qs{} performs better than \grid{} and therefor verifies the results presented in by \cite{wagner17}. It should be mentioned that outliers on the figures are the result of running \qs{} with inappropriate parameters e.g. where there is pruned away to much information. Furthermore these results also verify that the accuracy and distortion of the sketch is controlled by the parameters \textit{L} and $\Lambda$.  
 
 \subsection{Quadsketch and Quadsketch Random}
 Some interesting notions can be discussed from the results. Firstly both algorithms obtain approximately the same best scores for most datasets, except for on \mnist{} where \qsr{} achieves slightly better results. 
-Secondly \qsr{} seems to have a better average case than \qs{}. This is quite surprising as the theoretical distince distortion between the points should shift equally much. These performance differences could be explained by the nature of the randomly shifted grid, which in some cases can cause the algorithm to split the points in a favorable manner. What is  specifically beneficial for \qsr{} is the element of randomness that which gives the algorithm a chance to construct more accurate representation of the points within the individual quads of the \qt{}.
+Secondly \qsr{} seems to have a better average case than \qs{}. 
+\\
+\\
+Given the theory behind \qsr{} it's expected that \qsr{} should have better average case performance compared to \qs{}. On figures \ref{fig:graph sift}, \ref{fig:graph mnist} and \ref{fig:graph clust} it can be seen that \qsr{} has better average case scores for both accuracy and distortion when compared with \qs{} as \qsr{} has points with slightly better scores throughout the figures. This nicely backs the theory given for \qsr{} in section \ref{exp:dist}.
+\\
+\\
+The surprising result from the experiments is that \qsr{} actually has better max scores on the \mnist dataset. This was not expected and points to \qsr{} being a good improvement over \qs{} that its may not only be better in the average case but also better for max scores. This could be due to the fact that it is more probable that points in a real world dataset have bit strings that are uniformly random built of zeros and ones. This implies that \qs{} may never be able to build the original bit string again when there has been pruned away data. In contrast \qsr{} has a probability of guessing the sequence of zeros and ones there was in the original bit string giving a better accuracy and distortion. The reason why this only is apparent for the \mnist{} dataset could be to the number of dimensions in the dataset. Given a higher dimension a larger amount of bits are pruned for each pruning thus resulting in more of the bit string that needs to be replaced. When assuming a real world example of a bit string will have zeros and ones uniformly distributed throughout the bit string then \qsr{} should be able to get better estimate of the original bit string than \qs{} giving a better score for both accuracy and distortion. 
 
+
+%TODO maybe write about the difference between code and repport
 
 \subsection{Threats to validity}
 
@@ -21,3 +29,4 @@ The comparison of the algorithms shown in \ref{results} show single test runs of
 In \cite{wagner17} the experiments on \qs{} and \grid{} runs the parameter $\Lambda$ to 19 and \textit{L} to 20. This project stops the $\Lambda$ at 9 and \textit{L} at 10. The results could possibly disclose more information or differences in the algorithms if not for the earlier cutoff for the parameters in the experiments.
 
 \subsubsection{Missing Dimensionality Reduction}
+There is a little difference When comparing result of experiments from \cite{wagner17} and the results given in this paper. \cite{wagner17} state that they can set the number of dimensions to be $d=$\bo{$\epsilon^2\log(n)$} using Johnson-Lindenstrauss lemma. It is not clear if the datasets given have been through Johnson-Lindenstrauss. If they have not then results given in this paper might be closer to the results given in \cite{wagner17} by taking into account the reduction of dimensions. 	

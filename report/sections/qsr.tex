@@ -29,7 +29,7 @@ The given example in figure \ref{fig:randombits} demonstrates a scenario where t
 \\
 \\
 The motivation of this experiment stems from the creation of the random quad tree in \qs{}. Should the creation of this \qt{} accidentally quad through closely clustered points then the distortion could be quite severe. By introducing randomness into the direction of the points, they might end up in corners closer to each other and thereby reduce the amount of distortion.
-\clearpage
+
 \subsection{Expected Distance}
 \label{exp:dist}
 Consider some bitstring \textit{B} of length \textit{n} which has been removed by \qs{} pruning for one dimension. Consider \textit{k} = $2^n$. Let the range \textit{r} of \textit{B} be defined as 0 to k-1. The expected average euclidean distance \textit{$d_B$} from the bitstring of zero's inserted by \qs{} to \textit{B} can be formalized as\footnote{\url{https://en.wikipedia.org/wiki/Expected_value\#Finite_case}}:

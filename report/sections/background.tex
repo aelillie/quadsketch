@@ -15,6 +15,7 @@ Naturally one must pay to compress something, which happens in terms of accuracy
 Distance preserving compression algorithms are usually divided into two categories: data-oblivious and data-dependent. The former attempts to achieve guarantees for any data set while the latter attempts to use the extra information about the particular data sets in order to design functions with better performance. Compressed representations makes computation for data analysis algorithms more efficient, which is very desirable in many fields, such as data mining and machine learning.\cite{stan15}
 
 \subsection{The \qs{} compression scheme}
+\label{qs}
 The sketch is a compressed representation of a point set \texttt{X}. The points of \texttt{X} have \texttt{d} dimensions and are in \textit{euclidean} space. Each coordinate of a point is represented by \texttt{B} bits implying a point is represented by \textit{dB} bits. \qs{} will take as input the point set \texttt{X} and two additional parameters \texttt{L} and $\Lambda$. These two parameters are used to specify the compression of the point set where \texttt{L} is the depth of the \qt{} and $\Lambda$ is the amount of nodes from the \qt{} which can be removed. 
 %TODO: PRÆCISÉR parametre
 There are three steps for building the sketch: randomly shifted grid, \qt{} construction and pruning. These steps will be explained briefly and there will be given an example of how a sketch is built on a small example.

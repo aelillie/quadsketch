@@ -3,11 +3,20 @@
 This section discusses the findings presented in \ref{results}.
 
 \subsection{Verification of Performance}
-It should be briefly mentioned that \qs{} performs as expected above the baseline \grid{} implementation on all datasets, and the nature of the graphs behave as can be seen in \cite{wagner17}. The outliers that can be seen in the dataset are the result of running \qs{} and \qsr{} with inappropriate parameters. The accuracy and distortion of the sketch is controlled by \textit{L} and $\Lambda$ which the results confirm as well. 
+The results in figures \ref{fig:graph sift} and \ref{fig:graph mnist} are used for verifying the results presented in \cite{wagner17}. \cite{wagner17} showed \qs{} can out perform the baseline algorithm \grid{} for the datasets \sift{} and \mnist{} in regards to both accuracy and distortion. Both figures show \qs{} performs better than \grid{} and therefor verifies the results presented in by \cite{wagner17}. It should be mentioned that outliers on the figures are the result of running \qs{} with inappropriate parameters e.g. where there is pruned away to much information. Furthermore these results also verify that the accuracy and distortion of the sketch is controlled by the parameters \textit{L} and $\Lambda$.  
 
 \subsection{Quadsketch and Quadsketch Random}
 Some interesting notions can be discussed from the results. Firstly both algorithms obtain approximately the same best scores for most datasets, except for on \mnist{} where \qsr{} achieves slightly better results. 
-Secondly \qsr{} seems to have a better average case than \qs{}. This is quite surprising as the theoretical distince distortion between the points should shift equally much. These performance differences could be explained by the nature of the randomly shifted grid, which in some cases can cause the algorithm to split the points in a favorable manner. What is  specifically beneficial for \qsr{} is the element of randomness that which gives the algorithm a chance to construct more accurate representation of the points within the individual quads of the \qt{}.
+Secondly \qsr{} seems to have a better average case than \qs{}. 
+\\
+\\
+%TODO wirte about why the result for clusters is not as good in the favor for qsr
+Given the theory behind \qsr{} it's expected that \qsr{} should have better average case performance compared to \qs{}. On figures \ref{fig:graph sift}, \ref{fig:graph mnist} and \ref{fig:graph clust} it can be seen that \qsr{} has better average case scores for both accuracy and distortion when compared with \qs{}.
+
+%TODO write about why qsr has a better max case for mnist compared to qs
+
+
+This is quite surprising as the theoretical distance distortion between the points should shift equally much. These performance differences could be explained by the nature of the randomly shifted grid, which in some cases can cause the algorithm to split the points in a favorable manner. What is  specifically beneficial for \qsr{} is the element of randomness that which gives the algorithm a chance to construct more accurate representation of the points within the individual quads of the \qt{}.
 
 
 \subsection{Threats to validity}

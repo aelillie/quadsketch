@@ -1,4 +1,4 @@
-\section{Results}
+\section{Experiments}
 \label{results}
 %From ILO:
 %"Plan and carry out a small-scale investigation of an algorithmic research problem. This investigation could be theoretical, experimental, or both."
@@ -19,7 +19,7 @@ Similarly as in \cite{wagner17} the \qs{} implementations has been parameterized
 %- Zoom in on narrow / close datasets
 \\
 \\
-The charts presented below displays results from the dataset\sift{}, \mnist{}. These results are key in verifying the results presented in \cite{wagner17}. Following this are the charts displaying results from \clust{} and \gist{}, as these disclose new information about the overall performance of \qs{}. Two graphs exists for each dataset displaying \textit{accuracy} and \textit{distortion} respectively. The graphs display that \qs{} has a better performance than \grid{} and verifies the results presented from empirical experiments in \cite{wagner17}.
+The charts presented below displays results from the dataset \sift{}, \mnist{}. These results are key in verifying the results presented in \cite{wagner17}. Following this are the charts displaying results from \clust{} and \gist{}, as these disclose new information about the overall performance of \qs{}. Two graphs exists for each dataset displaying \textit{accuracy} and \textit{distortion} respectively. The graphs display that \qs{} has a better performance than \grid{} and verifies the results presented from empirical experiments in \cite{wagner17}.
 
 \begin{figure}[h!]
 \includegraphics[width=\textwidth]{figures/graphs/sift_accuracy}
@@ -47,11 +47,110 @@ Figure \ref{fig:graph mnist} displays that \qsr{} runs are slightly superior to 
 Figure \ref{fig:graph clust} shows that \qs{} and \qsr{} behaves similarly in best case runs for the clusters dataset. However the average case for \qsr{} is slightly superior to the \qs{} average results both regarding accuracy and distortion.
 \clearpage{}
 
-\begin{figure}[h]
-\includegraphics[width=0.5\textwidth]{figures/coding_graph}
-\includegraphics[width=0.5\textwidth]{figures/alcohol_graph}
-\caption{Accuracy and distortion from \gist{}}
-\label{fig:graph gist}
-\end{figure}
-Gist is the last dataset to demonstrate our extreme improvemnts. I am quite sure that we will impress Johan and Sam. And Erlich Bachmann (all heil). GG maybe this will not appear at all since the tests take a day to run each...
+%\begin{figure}[h]
+%\includegraphics[width=0.5\textwidth]{figures/coding_graph}
+%\includegraphics[width=0.5\textwidth]{figures/alcohol_graph}
+%\caption{Accuracy and distortion from \gist{}}
+%\label{fig:graph gist}
+%\end{figure}
 
+\begin{table}[h]
+	\centering
+	\caption{Average Results for \qs{} on \mnist{}}
+	\label{table:avg_mnist_qs2}
+	\begin{tabular}{l l l l}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 3.43 & 0.44 & 1.100  \\
+		4 & 4.36 & 0.51 & 1.096  \\
+		7 & 3.75 & 0.53 & 1.097 \\
+		8 & 3.69 & 0.56 & 1.09 \\
+		14 & 3.51 & 0.67 & 1.048 \\
+		16 & 3.45 & 0.69 & 1.039 \\
+		28 & 3.35 & 0.81 & 1.013 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h]
+	\centering
+	\caption{Average Results for \qsr{} on  \mnist{}}
+	\label{table:avg_mnist_qsr2}
+	\begin{tabular}{l l l l}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 3.79 & 0.55 & 1.118  \\
+		4 & 3.73 & 0.57 & 1.09  \\
+		7 & 3.21 & 0.62 & 1.062 \\
+		8 & 3.16 & 0.64 & 1.052 \\
+		14 & 3.01 & 0.74 & 1.023 \\
+		16 & 2.95 & 0.76 & 1.02 \\
+		28 & 2.87 & 0.85 & 1.008 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+
+\begin{table}[h!]
+	\centering
+	\caption{Average Results for \qs{} on \sift{}}
+	\label{table:avg_sift_qs}
+	\begin{tabular}{l l l l}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 4.32 & 0.49 & 1.122  \\
+		4 & 4.64 & 0.61 & 1.056  \\
+		8 & 4.39 & 0.7 & 1.034 \\
+		16 & 5.15 & 0.85 & 1.008 \\
+		32 & 5.68 & 0.78 & 1.025 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\caption{Average Results for \qsr{} \sift{}}
+	\label{table:avg_sift_qsr}
+	\begin{tabular}{l l l l}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 4.33 & 0.52 & 1.112  \\
+		4 & 4.63 & 0.65 & 1.04  \\
+		8 & 5.02 & 0.77 & 1.018 \\
+		16 & 5.44 & 0.83 & 1.015 \\
+		32 & 5.68 & 0.79 & 1.02 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\caption{Average Results for \qs{} \clust{}}
+	\label{table:avg_clust_qs}	
+	\begin{tabular}{l l l l}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 4.27	& 0.32 & 1.085  \\
+		4 & 4.51 & 0.39 & 1.058  \\
+		8 & 4.97 & 0.49 & 1.034 \\
+		16 & 5.72 & 0.59 & 1.026 \\
+		32 & 5.75 & 0.57 & 1.036 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+	\centering
+	\caption{Average Results for \qsr{} on \clust{}}
+	\label{table:avg_clust_qsr}
+	\begin{tabular}{l l l l}
+		\hline
+		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
+		2 & 4.26	& 0.33 & 1.08  \\
+		4 & 4.5 & 0.42 & 1.048  \\
+		8 & 4.97 & 0.52 & 1.03 \\
+		16 & 5.72 & 0.61 & 1.025 \\
+		32 & 6.08 & 0.63 & 1.026 \\
+		\hline
+	\end{tabular}
+\end{table}

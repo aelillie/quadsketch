@@ -14,14 +14,7 @@ Naturally one must pay to compress something, which happens in terms of accuracy
 \\
 Distance preserving compression algorithms are usually divided into two categories: data-oblivious and data-dependent. The former attempts to achieve guarantees for any data set while the latter attempts to use the extra information about the particular data sets in order to design functions with better performance. Compressed representations makes computation for data analysis algorithms more efficient, which is very desirable in many fields, such as data mining and machine learning.\cite{stan15}
 
-\subsection{State of the art}
-\label{state_of_the_art}
-Several state of the art algorithms exist for the research area introduced in section \ref{research_area}. \cite{wagner17} mentions \textit{Product Quantization} (\pq{}), which they use as reference state of the art algorithm in their experiments. The \pq{} concept is stated in its original paper, \cite{schmid9}, as such "The idea is to decomposes the space into a Cartesian product of low dimensional subspaces and to quantize each subspace separately", where the term \textit{quantize} refers to the process of constraining an input from a continuous set of values to a discrete set\footnote{E.g. real numbers to integers. See https://en.wikipedia.org/wiki/Quantization 11-04-2018}.
-
-Well known general algorithms and data structures exists for the same purpose, such as \textit{k-means} and \textit{kd-trees}, where the former is a clustering algorithm and the latter is an adaptive data structure for spatial data sets. This is also discussed in \cite{schmid9}, where it is noted that apparently a pure brute-force algorithm outperforms these in practice for high-dimensional data. Further algorithms listed in this paper include "spectral hashing"\cite{weiss8}, "Hamming embedding"\cite{jegou8}, and "FLANN"\cite{muja9}. These will not be investigated further, but are only mentioned for reference.
-
 \subsection{The \qs{} compression scheme}
-\subsection{Building the sketch}
 The sketch is a compressed representation of a point set \texttt{X}. The points of \texttt{X} have \texttt{d} dimensions and are in \textit{euclidean} space. Each coordinate of a point is represented by \texttt{B} bits implying a point is represented by \textit{dB} bits. \qs{} will take as input the point set \texttt{X} and two additional parameters \texttt{L} and $\Lambda$. These two parameters are used to specify the compression of the point set where \texttt{L} is the depth of the \qt{} and $\Lambda$ is the amount of nodes from the \qt{} which can be removed. 
 %TODO: PRÆCISÉR parametre
 There are three steps for building the sketch: randomly shifted grid, \qt{} construction and pruning. These steps will be explained briefly and there will be given an example of how a sketch is built on a small example.
@@ -45,6 +38,14 @@ After construction of the \qt{} the tree is pruned. There are found downward pat
 
 From this the sketch can be built. There is used the "Eulerian Tour Technique"\footnote{See e.g., \url{https://en.wikipedia.org/wiki/Euler\_tour\_technique}}.
 It starts at the root an searches down to the leftmost leaf. It will then back track up to its parents until it finds an new leaf it can traverse down to. When an edge is explored downwards there is stored a 0 and the label of the edge either a bit string or the length of an long edge. Also for each downward movement there is stored a bit specifying if the given edge is a long or short edge. If an upwards edge is explored then a 1 is stored. Furthermore, there is stored for each point an index for the child node which contains it.
+%TODO: Review this subsection to properly and precisely describe QS
+
+\subsection{Related work}
+\label{state_of_the_art}
+Several state of the art algorithms exist for the research area introduced in section \ref{research_area}. \cite{wagner17} mentions \textit{Product Quantization} (\pq{}), which they use as reference state of the art algorithm in their experiments. The \pq{} concept is stated in its original paper, \cite{schmid9}, as such "The idea is to decomposes the space into a Cartesian product of low dimensional subspaces and to quantize each subspace separately", where the term \textit{quantize} refers to the process of constraining an input from a continuous set of values to a discrete set\footnote{E.g. real numbers to integers. See https://en.wikipedia.org/wiki/Quantization 11-04-2018}.
+
+Well known general algorithms and data structures exists for the same purpose, such as \textit{k-means} and \textit{kd-trees}, where the former is a clustering algorithm and the latter is an adaptive data structure for spatial data sets. This is also discussed in \cite{schmid9}, where it is noted that apparently a pure brute-force algorithm outperforms these in practice for high-dimensional data. Further algorithms listed in this paper include "spectral hashing"\cite{weiss8}, "Hamming embedding"\cite{jegou8}, and "FLANN"\cite{muja9}. These will not be investigated further, but are only mentioned for reference.
+%TODO: Elaborate on closely related work and insert citations
 
 %From ILO:
 %"Identify and formulate precisely (if possible) the algorithmic problem hidden in a given programming task."

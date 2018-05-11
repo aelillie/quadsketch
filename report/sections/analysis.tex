@@ -6,6 +6,8 @@
 %"Theoretically analyze the performance of a given algorithmic solution"
 This section provides an analysis of properties of the \qs{} algorithm as introduced in \cite{wagner17}, which are deemed interesting and relevant for understanding the algorithm, and thus extend it with an improvement.
 
+%TODO: Do we have more analysis?
+
 \subsection{Why randomly shift hypercube?}
 Randomly shifting a hypercube in each dimension is necessary for the \qs{} implementation to maintain guarantees on arbitrary datasets. We hope to obtain a cube in which data points near each other are shifted into the same leaves in the \qt{}. The shifting can have varying practical effects given the randomness of the shifting.
 \\
@@ -14,5 +16,4 @@ If the dataset is of a known format, randomly shifting it in each dimension coul
 
 \subsection{Theorems}
 The paper introduces three theorems, where \tm{1} is the main theorem covering the basic variant of \qs{}. \tm{2} covers an advanced variant, and \tm{3} is the full version. The former makes guarantees for a \qs{} variant, where “for each point, the distances from that point to all other points are preserved up to a factor of 1+- $\epsilon$ with a constant probability”, whereas the latter “makes it possible to approximately preserve the distances between all pairs of points”. It seems like \tm{1} thus allows us to find distances between one single point and to all other points, but not the other way around, whereas with \tm{2} we can find the distance both from node 1 to node 2 and 3, but also from node 2 to node 3. This comes with a trade off, as with \tm{1} you are able to recover any points by decompressing the sketch, which is infeasible with \tm{2}, where \qs{} is recursively applied.
-
-%(TODO: Then what is theorem 3?)
+%TODO: Properly review theorem section

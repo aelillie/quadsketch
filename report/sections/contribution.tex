@@ -2,105 +2,42 @@
 \label{contribution}
 %Short section about our final findings and contributions
 %This section describes the contributions given to \qs{} as the results for this project.
-This project contributes with a verification of the results found in \cite{wagner17} using \qs{}. Furthermore an extension of \qs{} called \qsr{} is implemented, where the decompression step has been modified. Instead of placing zeros for pruned points, which are deemed insignificant in the pruning step (called \textit{long edges} in the paper), a bit is inserted at random. Empirical experiments constitute a comparison of \qs{}, \grid{} and \qsr{} which show slight improvement from the latter over \qs{}.
+This project contributes with a verification of the results found in \cite{wagner17} using \qs{}. Furthermore an extension of \qs{} called \qsr{} (for QuadSketch Random, in lack of better names) is implemented, where the decompression step has been modified. Instead of placing zeros in the bit representation of a point, which is deemed "non-important" to the compression scheme(called \textit{long edges} in the paper), bits are inserted at random. Empirical experiments constitute a comparison of \qs{}, \qsr{}, and a baseline comparison algorithm \grid{} which show slight improvements from \qsr{} over \qs{}. The most significant result is for the experiments on the \mnist{} dataset, where \qsr{} overall performs better than \qs{}. The average result reached for each block size in the tests are summarized in tables \ref{table:avg_mnist_qs1} and \ref{table:avg_mnist_qsr1}. Note however that the implemented modification does not alter the sketch size, which is only influenced by another factor. Even though the algorithm in its core is highly influences by randomness, the results gained from experiments are quite convincing. In section \ref{results}, this is furthermore demonstrated in figure \ref{fig:graph mnist}, which visualizes the test results in a graph.
 
-%TODO: add table with numbers of improvement !
-\begin{table}[h!]
+%TODO: Insert probability or distance improvements with QSR
+
+\begin{table}[h]
 	\centering
-	\caption{Average Results \mnist{} \qs{}}
-	\label{table:avg_mnist_qs}
-	\begin{tabular}{ccccc}
+	\caption{Average Results for \qs{} on \mnist{}}
+	\label{table:avg_mnist_qs1}
+	\begin{tabular}{l l l l}
 		\hline
 		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
-		2 & 3.431401618 & 0.442369565 & 1.100243043  \\
-		4 & 4.356745996 & 0.514935556 & 1.096021778  \\
-		7 & 3.748759663 & 0.533835556 & 1.097194 \\
-		8 & 3.69316803 & 0.555815556 & 1.090394 \\
-		14 & 3.514198308 & 0.666457778 & 1.048070667 \\
-		16 & 3.447520114 & 0.691308889 & 1.039142444 \\
-		28 & 3.351639611 & 0.80766 & 1.013258889 \\
+		2 & 3.43 & 0.44 & 1.100  \\
+		4 & 4.36 & 0.51 & 1.096  \\
+		7 & 3.75 & 0.53 & 1.097 \\
+		8 & 3.69 & 0.56 & 1.09 \\
+		14 & 3.51 & 0.67 & 1.048 \\
+		16 & 3.45 & 0.69 & 1.039 \\
+		28 & 3.35 & 0.81 & 1.013 \\
 		\hline
 	\end{tabular}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[h]
 	\centering
-	\caption{Average Results \mnist{} \qsr{}}
-	\label{table:avg_mnist_qsr}
-	\begin{tabular}{ccccc}
+	\caption{Average Results for \qsr{} on  \mnist{}}
+	\label{table:avg_mnist_qsr1}
+	\begin{tabular}{l l l l}
 		\hline
 		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
-		2 & 3.791149556 & 0.545435556 & 1.117902889  \\
-		4 & 3.731631978 & 0.570762222 & 1.090473333  \\
-		7 & 3.2148296 & 0.615646667 & 1.062086 \\
-		8 & 3.164607822 & 0.63972 & 1.052425778 \\
-		14 & 3.0125182 & 0.743888889 & 1.023143333 \\
-		16 & 2.954859333 & 0.762051111 & 1.019534667 \\
-		28 & 2.874194133 & 0.848722222 & 1.008049333 \\
-		\hline
-	\end{tabular}
-\end{table}
-
-\begin{table}[h!]
-	\centering
-	\caption{Average Results \sift{} \qs{}}
-	\label{table:avg_sift_qs}
-	\begin{tabular}{ccccc}
-		\hline
-		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
-		2 & 4.315538194	& 0.488631111 & 1.121583556  \\
-		4 & 4.635345104 & 0.613071111 & 1.055850444  \\
-		8 & 4.393382276 & 0.69517027 & 1.033604324 \\
-		16 & 5.14896279 & 0.846907143 & 1.00786 \\
-		32 & 5.675025467 & 0.780888889 & 1.024971556 \\
-		\hline
-	\end{tabular}
-\end{table}
-
-\begin{table}[h!]
-	\centering
-	\caption{Average Results \sift{} \qsr{}}
-	\label{table:avg_sift_qsr}
-	\begin{tabular}{ccccc}
-		\hline
-		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
-		2 & 4.325384667	& 0.518851111 & 1.111769111  \\
-		4 & 4.6295994 & 0.651095556 & 1.040538222  \\
-		8 & 5.015656956 & 0.765835556 & 1.018494444 \\
-		16 & 5.442561087 & 0.831104348 & 1.015347174 \\
-		32 & 5.676809778 & 0.793926667 & 1.020890222 \\
-		\hline
-	\end{tabular}
-\end{table}
-
-\begin{table}[h!]
-	\centering
-	\caption{Average Results \clust{} \qs{}}
-	\label{table:avg_clust_qs}	
-	\begin{tabular}{ccccc}
-		\hline
-		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
-		2 & 4.272613829	& 0.305017778 & 1.084919778  \\
-		4 & 4.506985248 & 0.391806667 & 1.057562667  \\
-		8 & 4.970301394 & 0.487966667 & 1.034483111 \\
-		16 & 5.719025236 & 0.590073333 & 1.025546222 \\
-		32 & 5.752728007 & 0.570573469 & 1.035590612 \\
-		\hline
-	\end{tabular}
-\end{table}
-
-\begin{table}[h!]
-	\centering
-	\caption{Average Results \clust{} \qsr{}}
-	\label{table:avg_clust_qsr}
-	\begin{tabular}{ccccc}
-		\hline
-		\#Blocks & Bits per coordinate & Accuracy  & Distortion \\ \hline
-		2 & 4.261578222	& 0.329313333 & 1.079774  \\
-		4 & 4.499941667 & 0.421373333 & 1.048238222  \\
-		8 & 4.9704786 & 0.517408889 & 1.030564 \\
-		16 & 5.717358267 & 0.607028889 & 1.024993778 \\
-		32 & 6.078499333 & 0.627446667 & 1.025521333 \\
+		2 & 3.79 & 0.55 & 1.118  \\
+		4 & 3.73 & 0.57 & 1.09  \\
+		7 & 3.21 & 0.62 & 1.062 \\
+		8 & 3.16 & 0.64 & 1.052 \\
+		14 & 3.01 & 0.74 & 1.023 \\
+		16 & 2.95 & 0.76 & 1.02 \\
+		28 & 2.87 & 0.85 & 1.008 \\
 		\hline
 	\end{tabular}
 \end{table}

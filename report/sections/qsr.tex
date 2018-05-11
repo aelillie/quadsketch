@@ -1,6 +1,6 @@
 \section{Modification of the \qs{} long edge representation}
 \label{qsr}
-An implementation of \qs{} with a modified approach to representing insignificant bits for a node in the \qt{} has been implemented in \texttt{qsr.cpp} and is called \qsr{}. Section \ref{finding_improvements} described the method for getting to this, and this section will properly introduce the extension to the algorithm and why it should yield practical in some scenarios.
+An implementation of \qs{} with a modified approach to representing insignificant bits for a node in the \qt{} has been implemented in \texttt{qsr.cpp} and is called \qsr{}. Section \ref{finding_improvements} described the method for getting to this, and this section will properly introduce the extension to the algorithm and why it should yield practical improvements in some scenarios.
 \\
 \\
 This experiment focuses on the pruning step of the algorithm. Recall that in the pruning step \qs{} shifts each point in a quad towards the lower left corner by replacing existing bits with zero's. The alteration introduced in this experiment moves each point in a quad towards a random corner of that quad. More precisely, by not only introducing zero's into the bit string as replacement, this feature insert bits into the bit string at random. The modification in the implementation is subtle and is illustrated in listing \ref{lst:qsr} below, which is extracted from lines 91-99 in \texttt{qsr.cpp}:
@@ -27,3 +27,5 @@ The given example in figure \ref{fig:randombits} demonstrates a scenario where t
 \\
 \\
 The motivation of this experiment stems from the creation of the random quad tree in \qs{}. Should the creation of this \qt{} accidentally quad through closely clustered points then the distortion could be quite severe. By introducing randomness into the direction of the points, they might end up in corners closer to each other and thereby reduce the amount of distortion.
+
+%TODO: Insert some math stats

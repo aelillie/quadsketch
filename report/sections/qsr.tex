@@ -1,5 +1,7 @@
 \section{Modification of the \qs{} long edge representation}
 \label{qsr}
+\subsection{\qsr{}}
+
 An implementation of \qs{} with a modified approach to representing insignificant bits for a node in the \qt{} has been implemented in \texttt{qsr.cpp} and is called \qsr{}. Section \ref{finding_improvements} described the method for getting to this, and this section will properly introduce the extension to the algorithm and why it should yield practical improvements in some scenarios.
 \\
 \\
@@ -28,4 +30,13 @@ The given example in figure \ref{fig:randombits} demonstrates a scenario where t
 \\
 The motivation of this experiment stems from the creation of the random quad tree in \qs{}. Should the creation of this \qt{} accidentally quad through closely clustered points then the distortion could be quite severe. By introducing randomness into the direction of the points, they might end up in corners closer to each other and thereby reduce the amount of distortion.
 
-%TODO: Insert some math stats
+\subsection{Expected value}
+Consider some bitstring \textit{B} of length \textit{n} which has been removed by \qs{} pruning for one dimension. Let \textit{k} = $2^n$ describe the range of \textit{B}. The expected average euclidean distance \textit{$d_B$} from the bitstring of zero's inserted by \qs{} to \textit{B} can be formalized as\footnote{\url{https://en.wikipedia.org/wiki/Expected_value\#Finite_case}}:
+\\
+$$E[\textit{$d_B$}] = \sum_{i=0}^{k - 1} \dfrac{i}{k}$$
+\\
+%\textit{$d_B$} can as such be reduced to $\dfrac{k-1}{2}$
+The expected average euclidean distance \textit{$d'_B$} from B to the bitstring inserted by \qsr{} can be described as the distance from B to some random bitstring \textit{B'} with the same length \textit{n}. There are k different values for \textit{B} and for each of these some distance to the k different values for \textit{B'}. This gives ac collection of distances \textit{D} of length $k^2$ where $\forall{}\textit{d}\in{}\textit{D}$ $0\leq{}d\leq{}k-1$. As such \textit{$d'_B$} can be formalized as:
+\\
+$$E[\textit{$d'_B$}] = \sum_{d\in\textit{D}}^{}\dfrac{d}{k^2}$$
+\\

@@ -17,7 +17,7 @@ There are two main parameters controlling the performance of \qs{}; \textit{L}, 
 \\
 The paper introduces several experiments demonstrating the efficiency of the algorithm by conducting nearest-neighbor (NN) searches on different datasets. The authors have tested \qs{} alongside with two other distance preserving compression algorithms, \texttt{Product Quantization} referred to as \pq{} and a baseline scalar uniform quantization implementation referred to as \gr{}. Popular datasets for NN including SIFT and MNIST are used, as well as a "NYC Taxi" dataset and a synthetic "Diagonal" dataset. From the experiments it is concluded that \qs{} overall performs well on "typical" datasets, while its provable guarantees ensure robust performance in a wide range of scenarios\cite[p. 2, l. 38-40]{wagner17}. 
 
-\subsection{Problem definition} %What is our research question?
+\subsection{Problem statement} %What is our research question?
 %From ILO:
 %"Plan and carry out a small-scale investigation of an algorithmic research problem. This investigation could be theoretical, experimental, or both."
 \cite{wagner17} presents the \qs{} algorithm, competing with state of the art distance preserving compression algorithms, running in \bos{ndL} time and produces a sketch of size \bo{nd$\Lambda$~+~n~log~n} bits\footnote{See Theorem 1 in \cite[p. 3]{wagner17}}. This paper will attempt to verify their results by running similar experiments, as well as on other datasets, and finally propose a contribution the practical performance of the \qs{} algorithm.

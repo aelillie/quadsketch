@@ -47,7 +47,7 @@ As the research area, described in \ref{research_area}, is as big as it is, a hu
 %TODO: Write which papers are related
 
 \subsubsection{\textit{Product Quantization}}
-The \pq{} concept is stated in the abstract of the original paper as such: "This paper introduces a product quantization based approach for approximate nearest neighbor search[ANN]. The idea is to decompose[ ] the space into a Cartesian product of low dimensional subspaces and to quantize each subspace separately". Specifically the algorithm uses \textit{vector quantization} as the approach to compress data, mapping a real valued vector, \textit{x}, in \textit{D}-dimensional space to \textit{centroid} representations, \textit{$c_i$}, in a set $\mathcal{V}_i$\cite[p.3 II-A]{schmid9}. The set of vectors mapped with the quantizer function \textit{q} to a given index \textit{i} is referred to as a (Voronoi) \textit{cell}, and defined as:
+The \pq{} concept is stated in the abstract of the original paper as such: \textit{This paper introduces a product quantization based approach for approximate nearest neighbor search}[ANN].\textit{The idea is to decompose}[ ] \textit{the space into a Cartesian product of low dimensional subspaces and to quantize each subspace separately}. Specifically the algorithm uses \textit{vector quantization} as the approach to compress data, mapping a real valued vector, \textit{x}, in \textit{D}-dimensional space to \textit{centroid} representations, \textit{$c_i$}, in a set $\mathcal{V}_i$\cite[p.3 II-A]{schmid9}. The set of vectors mapped with the quantizer function \textit{q} to a given index \textit{i} is referred to as a (Voronoi) \textit{cell}, and defined as:
 
 \begin{equation}
 	\mathcal{V}_i\mathrel{\hat=}{x\in\mathbb{R}^D : q(x)=c_i}
@@ -55,11 +55,16 @@ The \pq{} concept is stated in the abstract of the original paper as such: "This
 
 As opposed to scalar quantization, where single values are reconstructed, in this case the set of \textit{vectors}, indexed to the same cell, are reconstructed. Before applying this scheme to the vectors, the D dimensions are divided into \textit{product quantizers}, basically dividing the space into \textit{m} subvectors of \textit{D*} dimensions, such that \textit{D*$=D/m$}\cite[p.3 II-B]{schmid9}. The subvectors are then quantized seperately using \textit{m} distinct quantizers. This scheme is applied, allowing to keep very large vector codes in memory. As reference a convincing example is listed in \cite[Table I, p. 4]{schmid9}, illustrating that the k-means algorithm consumes $kD$ memory, while k-means with product quantization consumes  $k^{1/m}D$.
 
-Besides using \pq{} as comparison algorithm in their experiments, \qs{} is actually implemented\footnote{specifically defined in \tm{3}, \cite[p. 5]{wagner17}} with the same idea of \textit{product quantizers}..
+Besides using \pq{} as comparison algorithm in their experiments, \qs{} is actually implemented with the same idea of \textit{product quantizers}\footnote{specifically defined in \tm{3}, \cite[p. 5]{wagner17}}. \qs{} is applied to all data points for each subvector in \textit{D*} dimensions, which is referred to as \textit{blocks} in their paper. 
 
-\subsubsection{Spectral hashing}
-%TODO: Relate
-%TODO: More related work than 2?
+\subsubsection{Hashing methods} %TODO: Cite
+Further algorithms on data-dependent distance preserving compression algorithms include Locality Sensitive Hashing(LSH), Semantic Hashing, and Spectral Hashing\cite{weiss8}, which all rely on hash functions for computing codes. 
+
+The former algorithm, LSH, is popular, and widely used as reference in the research area. Instead of using tree-like data structures, such as kd-tree, it hashes points using several hash functions, ensuring that, for each function, the probability of collision is much higher for objects which are close to each other than for those that are far apart\footnote{It is worth noting that this is the exact opposite of what is trying to be achieved in e.g. hash tables}. Thus, one can use this scheme to hash a query point, and then retrieve near neighbors contained in the same hash bucket.
+
+Semantic Hashing computes compact codes for data points such that the Hamming distance between two different codes are correlated with \textit{semantic similarity}(i.e. the idea of distance is based on the likeness of meaning or semantic content\footnote{\url{https://en.wikipedia.org/wiki/Semantic_similarity}. Accessed 14-05-2018}). Similar neighbors are then computed by retrieving items within a small Hamming distance from the code of the query.  
+
+Similarly Spectral Hashing tries to obtain binary code representation of data points. This algorithm uses a bit more complex approach. It first performs a Principal component analysis (PCA) on the data, which converts it to a \textit{set of values of linearly uncorrelated variables called principal components}\footnote{\url{https://en.wikipedia.org/wiki/Principal_component_analysis}. Accessed 14-05-2018}. Then a concept of fitting a rectangular approximation along every PCA direction is performed by finding the \textit{k} smallest eigenvalues\footnote{A vector that only changes by a scalar factor when applied with a linear transformation. \url{https://en.wikipedia.org/wiki/Eigenvalues_and_eigenvectors}. Accessed 14-05-2018.}, and finally thresholding these to obtain binary codes(i.e. setting a 1 when a value is above some threshold, otherwise 0). 
 
 \subsubsection{Stefan}
 

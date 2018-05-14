@@ -43,7 +43,8 @@ It starts at the root of the tree and searches down to the leftmost leaf. It wil
 %"Find, extract and explain results in the algorithms research literature relevant to a given problem."
 \subsection{Related work}
 \label{state_of_the_art}
-As the research area, described in \ref{research_area}, is as big as it is, a huge amount of related work to \qs{} exists. \cite{wagner17} specifically compares their algorithm to a state of the art algorithm, \textit{Product Quantization} (\pq{}), introduced in \cite{schmid9}. 
+As the research area, described in \ref{research_area}, is as big as it is, a huge amount of related work to \qs{} exists. \cite{wagner17} specifically compares their algorithm to a state of the art algorithm, \textit{Product Quantization} (\pq{}), introduced in \cite{schmid9}. %Furthermore Spectral Hashing is closely relates as... Also the findings in [6] shows that...
+%TODO: Write which papers are related
 
 \subsubsection{\textit{Product Quantization}}
 The \pq{} concept is stated in the abstract of the original paper as such: "This paper introduces a product quantization based approach for approximate nearest neighbor search[ANN]. The idea is to decompose[ ] the space into a Cartesian product of low dimensional subspaces and to quantize each subspace separately". Specifically the algorithm uses \textit{vector quantization} as the approach to compress data, mapping a real valued vector, \textit{x}, in \textit{D}-dimensional space to \textit{centroid} representations, \textit{$c_i$}, in a set $\mathcal{V}_i$\cite[p.3 II-A]{schmid9}. The set of vectors mapped with the quantizer function \textit{q} to a given index \textit{i} is referred to as a (Voronoi) \textit{cell}, and defined as:

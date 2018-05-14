@@ -22,7 +22,9 @@ The paper compares the \qs{} performance with other compression algorithms, incl
 
 \subsubsection{Selected Datasets}
 \label{datasets}
-To ensure proper verification of the results for the \qs{}, the implementation and baseline is tested on two of the datasets used reported in the paper, namely SIFT and MNIST, as these were already available from their repository. Furthermore a synthetic dataset has been generated, both to test \qs{} on a different kind of dataset, but also for experimental reasons for \qsr{}, which is elaborated on in section \ref{clusters}. If the results from the experiments turn out to be equivalent or close to the results given in \cite{wagner17}, it will strengthen the credibility of the practical efficiency of \qs{}.
+To ensure proper verification of the results for the \qs{}, the implementation and baseline is tested on two of the datasets used reported in the paper, namely SIFT and MNIST, as these were already available from their repository. Furthermore a synthetic dataset has been generated, both to test \qs{} on a different kind of dataset, but also for experimental reasons for \qsr{}, which is elaborated on in section \ref{clusters}. 
+\\
+Lastly \qs{} is tested on the GIST dataset. GIST uses global descriptors, and similarly to the smaller SIFT dataset which uses local descriptors, the idea is to use set of perceptual dimensions  such as naturalness, openness, roughness, expansion, ruggedness. These perceptual dimensions represent the dominant spatial structure of a scene \cite{MattD}. GIST is an interesting dataset to consider, as it has a high number of dimensions, and it is used to test the performance of \pq{} in \cite{schmid9} but not used in \cite{wagner17} where the performance of \qs{} is compared to \pq{}. If the results from the experiments turn out to be equivalent or close to the results given in \cite{wagner17}, it will strengthen the credibility of the practical efficiency of \qs{}. 
 \\
 \\
 Applying \qs{} to other datasets could provide some additional insight into how the properties of the datasets might impact the resulting sketch. These results could then be used to e.g. derive heuristics for \qs{} or set a standard for which parameters \qs{} should use. This is further discussed in section \ref{futurework}.
@@ -38,7 +40,7 @@ The properties of the datasets used for verification, as well as for experiments
 		\sift{} & 1,000,000 & 128 & $\geq$ 83.2 \\
 		\mnist{} & 60,000 & 784 & $\geq$ 9.2 \\
 		\clust{} & 1,000,000 & 128 & 57.9 \\
-		%	GIST & 1,000,000 & 960 & $\geq$ 580 \\
+		\gist{} & 1,000,000 & 960 & $\geq$ 580 \\
 		\hline
 	\end{tabular}
 	\caption{Properties of the datasets}

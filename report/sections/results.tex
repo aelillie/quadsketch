@@ -2,16 +2,16 @@
 \label{results}
 %From ILO:
 %"Plan and carry out a small-scale investigation of an algorithmic research problem. This investigation could be theoretical, experimental, or both."
-This sections describes the results reached in the project. The goal in this section is threefold. Firstly to verify the results achieved in \cite{wagner17}. Secondly to explore the performance of \qs{} on new datasets. These datasets will have different properties than the datasets tested in \cite{wagner17}. Lastly to discover the performance of \qsr{} and compare this to the performance of \qs{}. 
+This sections describes the results reached in the project. The goal in this section is threefold. Firstly to verify the results achieved in \cite{wagner17}. Secondly to explore the performance of \qs{} on new datasets. Lastly to discover the performance of \qsr{} and compare this to the performance of \qs{}. 
 \\
 \\
 The expirements are based on two datasets from the paper as well as two new datasets.\footnote{From \cite{wagner17} we use the datasets \sift{} and \mnist{}. Explicitly in this paper we have included \clust{} and \gist{}} For each dataset the results of \qs{} is verified and compared to the baseline implementation \gr{} and to \qsr{}. 
 \\
 \\
-The results of these tests are illustrated as line charts. The charts visualizes the performance of the algorithms for each dataset measured in terms of \textit{accuracy pr bit of precision} and \textit{distortion pr bit of precision}. 
+The results of these tests are illustrated as line charts. The charts visualize the performance of the algorithms for each dataset measured in terms of \textit{accuracy pr bit of precision} and \textit{distortion pr bit of precision}. 
 \\
 \\
-Similarly as in \cite{wagner17} the \qs{} implementations has been parameterized with \textit{L} ranging from 2 till 10 and $\Lambda$ ranging from \textit{L$_{min}$-1} to \textit{L$_{max}$-1}.\footnote{Their experiments range from \textit{L} ranging from 2 till 20 and $\Lambda$ 1 till 19. However the computation time for trees with a depth $>$ 14 is immense.} 
+Similarly as in \cite{wagner17} the \qs{} implementations has been parameterized with \textit{L} ranging from 2 till 10 and $\Lambda$ ranging from \textit{L$_{min}$-1} to \textit{L$_{max}$-1}.\footnote{Their experiments range from \textit{L} ranging from 2 till 20 and $\Lambda$ 1 till 19. A notion on this can be found in \ref{disc/threats/depth}} 
 %\subsection{Practical improvements}
 %Instead of randomly shifted ( works well for arbitrary, but maybe we know our data )
 %On specific datasets:
@@ -19,7 +19,7 @@ Similarly as in \cite{wagner17} the \qs{} implementations has been parameterized
 %- Zoom in on narrow / close datasets
 \\
 \\
-The charts presented below displays results from the dataset \sift{}, \mnist{}. These results are key in verifying the results presented in \cite{wagner17}. Following this are the charts displaying results from \clust{} and \gist{}, as these disclose new information about the overall performance of \qs{}. Two graphs exists for each dataset displaying \textit{accuracy} and \textit{distortion} respectively. The graphs display that \qs{} has a better performance than \grid{} and verifies the results presented from empirical experiments in \cite{wagner17}.
+The charts presented first in this section displays the results from the datasets \sift{} and \mnist{}. These results are key in verifying the results presented in \cite{wagner17}. Following this are the charts displaying results from \clust{} and \gist{}, as these disclose new information about the overall performance of \qs{}. Two graphs exists for each dataset, one displaying \textit{accuracy} and the other displaying \textit{distortion}. Each graph displays the results of the three algorithms \qs{}, \qsr{} and \grid{}, except for the graph for \gist{}, which only contains results for \qs{}.\footnote{Due to the size of \gist{} and the resulting computation time, it was not feasible to test with other algorithms as well. }
 
 \begin{figure}[h!]
 \includegraphics[width=\textwidth]{figures/graphs/sift_accuracy}

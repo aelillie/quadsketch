@@ -1,7 +1,7 @@
 \section{Introduction}
 \label{introduction}
 %Formal introduction goes here
-This report investigates and reports on the findings of a relatively new distance-preserving compression algorithm \qs{}, introduced in \cite{wagner17}. This paper is outlined as a project in the course Algorithm Design Project on the second semester of the Software Development MSc program on the IT-University of Copenhagen in the Spring, 2018.
+This report investigates and reports on the findings of a relatively new distance-preserving compression algorithm \qs{}, introduced in \cite{wagner17}. This paper is outlined as a project in the course Algorithm Design Project on the second semester of the Software Development MSc program at IT-University of Copenhagen in the Spring, 2018.
 \\
 \\
 This section describes the motivation behind this project, introduces the project case (i.e. \qs{}), and outlines the overall problem definition. Section \ref{contribution} presents a contribution to the algorithm, being a modified pruning/decompression step. Section \ref{background} describes the research area, presents the \qs{} algorithm, as well as related work. Next, in section \ref{analysis}, an analysis of the algorithm as introduced in \cite{wagner17}, including the \qs{} implementation itself, is carried out. This leads to section \ref{methods}, which explains the methods used for reaching the results given in section \ref{qsr} and \ref{results}. A discussion of the findings is presented in \ref{discussion}, followed by a section with thoughts of future work. Finally a conclusion to the problem definition and the overall project is outlined in \ref{conclusion}.
@@ -19,8 +19,10 @@ The paper introduces several experiments demonstrating the efficiency of the alg
 
 \subsection{Problem statement} %What is our research question?
 %From ILO:
+\label{intro:problemStatement}
 %"Plan and carry out a small-scale investigation of an algorithmic research problem. This investigation could be theoretical, experimental, or both."
-\cite{wagner17} presents the \qs{} algorithm, competing with state of the art distance preserving compression algorithms, running in \bos{ndL} time and produces a sketch of size \bo{nd$\Lambda$~+~n~log~n} bits\footnote{See Theorem 1 in \cite[p. 3]{wagner17}}. This paper will attempt to verify their results by running similar experiments, as well as on other datasets, and finally propose a contribution the practical performance of the \qs{} algorithm.
+%TODO burde denne size ikke være den samme som den givet i into?
+\cite{wagner17} presents the \qs{} algorithm, competing with state of the art distance preserving compression algorithms, running in \bos{ndL} time and produces a sketch of size \bo{nd$\Lambda$~+~n~log~n} bits\footnote{See Theorem 1 in \cite[p. 3]{wagner17}}. This paper will attempt to verify their results by running similar experiments, as well as on other datasets, and finally propose a contribution to the practical performance of the \qs{} algorithm.
 
 %$\Lambda$=\bo{$log(d\;\log\Phi/\epsilon)$}\\
 

@@ -38,6 +38,24 @@ The final step is pruning. For each downward path $n_0,...,n_k$ in the \qt{} whe
 To represent the sketch the "Eulerian Tour Technique"\footnote{See e.g., \url{https://en.wikipedia.org/wiki/Euler\_tour\_technique}} is used.
 It starts at the root of the tree and searches down to the leftmost leaf. It will then backtrack up to a node from which it came and traverse down to find a new leaf in a depth first search manner. When an edge is explored downwards a 0 is stored together with the label of the edge, being either a bit string or the length of a long edge and a bit specifying if the given edge is a long or short edge. If an upwards edge is explored a 1 is stored. Furthermore, there is stored an index for each point for the child node which contains it.
 %TODO: Review this subsection to properly and precisely describe QS
+\\
+\\
+The paper \cite{wagner17} present three different approaches for building the previous described sketch each giving different properties for the resulting sketch. These different properties are defined as theorems.
+\\
+\\
+Theorem 1 gives the property that for each point, the distance from the given point to all other points are preserved up to a given factor $1\pm\epsilon$ with a constant probability. This is formalized as the following guarantee: $For every i\in{}n$
+\begin{equation}
+Pr[\forall{}_{j\in{}[n]} ||~x_i-~x_j||= (1\pm\epsilon)||x_i-x_j||] >= 1 - \delta
+\end{equation}
+
+Theorem 2 gives the property of being able to recover every distance $||x_i-x_j||$  up to a distortion $1\pm\epsilon$ with a high probability.
+\\
+\\
+Theorem 3 is an extension of theorem 1 in which a sketch is built for $m$ blocks where a block is a subset of dimensions for the points in the dataset $X$. Here \qs{} is applied separately to each block. This gives the following guarantee:
+
+\begin{equation}
+Pr[\forall{}_{j\in{}[n]} ||~x_i-~x_j||= (1\pm\epsilon)||x_i-x_j||] >= 1 - m\delta
+\end{equation}
 
 %From ILO:
 %"Find, extract and explain results in the algorithms research literature relevant to a given problem."

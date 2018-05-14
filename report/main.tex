@@ -13,6 +13,7 @@
 \usepackage{mathtools}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{pdfpages}
 \lstset { 
 	language=C++,
 	%backgroundcolor=\color{black!5}, % set backgroundcolor
@@ -41,7 +42,7 @@
 
 \begin{document}
 \pagenumbering{gobble} %remove page numbering
-%\includepdf[pages=-]{frontpage.pdf}
+\includepdf[pages=-]{frontpage.pdf}
 \begin{titlepage}
 	
 	\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
@@ -53,7 +54,7 @@
 	\textsc{\large Algorithm Design Project}\\[0.5cm] % Minor heading
 	
 	\HRule \\[0.4cm]
-	{ \huge \bfseries QuadSketch}\\[0.4cm] % Title of document
+	{ \huge \bfseries The QuadSketch Compression Algorithm}\\[0.4cm] % Title of document
 	\HRule \\[1.5cm]
 	
 	\begin{minipage}{0.5\textwidth}

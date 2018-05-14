@@ -61,7 +61,18 @@ Besides using \pq{} as comparison algorithm in their experiments, \qs{} is actua
 %TODO: Relate
 %TODO: More related work than 2?
 
-\subsubsection{Stefan}
+\subsubsection{Near-Optimal (Euclidean) Metric Compression}
+Referenced throughout \cite{wagner17} is the paper \cite{NearO}. This paper describes a method using two collaborative algorithms to construct a sketch of size \bo{nlog(1/$\epsilon$) + log log $\Phi$}, improving over the bound achieved by \qs{}. This method is related to \qs{} both in research area, but also in nature of the algorithms. The algorithms are based on a hierarchical clustering of the points and both uses similar pruning techniques in order to reduce the size of sketch.
+\\
+\\
+The method described in \cite{NearO} makes use of two algorithms, namely a \textit{summation} algorithm \texttt{SUM} and an \textit{estimation} algorithm \texttt{EST}. \texttt{SUM} makes up most of the paper as this is the algortihm is responsible for constructing the sketch. The \texttt{EST} algorithm is responsible for approximating the distance between two points in the sketch. \texttt{EST} is a simpler process as it mostly utilizes the design of the sketch. Following is a slightly more description of \texttt{SUM} and \texttt{EST}
 
+\texttt{SUM} constructs a variant of hierarchically well-separated trees (HST's) connecting each cluster C in a dataset to its related subclusters. For every connected component C in the tree T, a node \textit{v} is created and a function is defined mapping the \textit{v} to C. These nodes are used as entry points to the underlying clusters in T. The tree T has \textit{n} leaves and a depth up to \textit{log $\Phi$ + 2} prior to the compression step, which is also performed by \texttt{SUM}. This compression step is quite similar to the pruning step in \cite{wagner17}, as it compresses long paths of degree-1 nodes.
+\\
+\\
+After the compression of T the SUM algorithm associates a three properties for each node \textit{v} $\in$ T. Firstly it associates a center, \textit{c(v)}, secondly an ingress \textit{in(v)} and thirdly a surrogate \textit{s*(v)}. The function \textit{c(v)} points to the node which represents the center of the cluser to which \textit{v} belongs, and \textit{s*(v)} describes the approximate location of this center from \textit{v}. The \textit{in(v)} function points to another node in the same subtree as \textit{v} and is used to calculate \textit{v's} displacement from its center. Once these properties have been associated to each node in T, the sketch is created, storing the structure of T denoting long edges and short edges similarly as in \qs{}. Each node in T is then represented using the center, ingress, a $\delta$ value associated to \textit{s*(v)} and an approximation value. 
+\\
+\\
+Once the sketch has been created the method now makes use of the \texttt{EST} algorithm to produce a (1 $\pm$ $\epsilon$)-approximation for the distance between any two points in the given dataset. \texttt{EST} is able to recover the approximate surrogates related to a point, and since the surrogates exist in the same subtree as the original point, it is hence possible to deduce the approximate distance. 
 %Well known general algorithms and data structures exists for the same purpose, such as \textit{k-means} and \textit{kd-trees}, where the former is a clustering algorithm and the latter is an adaptive data structure for spatial data sets. This is also discussed in \cite{schmid9}, where it is noted that apparently a pure brute-force algorithm outperforms these in practice for high-dimensional data. Further algorithms listed in this paper include "spectral hashing"\cite{weiss8}, "Hamming embedding"\cite{jegou8}, and "FLANN"\cite{muja9}. These will not be investigated further, but are only mentioned for reference.
 %TODO: Elaborate on closely related work and insert citations

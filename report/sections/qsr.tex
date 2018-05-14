@@ -32,13 +32,13 @@ The motivation of this experiment stems from the creation of the random quad tre
 
 \subsection{Expected Distance}
 \label{exp:dist}
-Consider some bitstring \textit{B} of length \textit{n} which has been removed by \qs{} pruning for one dimension. Consider \textit{k} = $2^n$. Let the range \textit{r} of \textit{B} be defined as 0 to k-1. The expected average euclidean distance \textit{$d_B$} from the bitstring of zero's inserted by \qs{} to \textit{B} can be formalized as\footnote{\url{https://en.wikipedia.org/wiki/Expected_value\#Finite_case}}:
+Consider some bitstring \textit{B} of length \textit{n} which has been removed by \qs{} pruning for one dimension. Consider \textit{k} = $2^n$. Let the range \textit{r} of \textit{B} be defined as 0 to k-1. The expected euclidean distance \textit{$d_B$} from the bitstring of zero's inserted by \qs{} to \textit{B} can be formalized as\footnote{\url{https://en.wikipedia.org/wiki/Expected_value\#Finite_case}}:
 \\
 $$E[\textit{$d_B$}] = \sum_{i=0}^{k - 1} \dfrac{i}{k}$$
 \\
 %\textit{$d_B$} can as such be reduced to $\dfrac{k-1}{2}$
-The expected average euclidean distance \textit{$d'_B$} from B to the bitstring inserted by \qsr{} can be described as the distance from B to some random bitstring \textit{B'} with the same length \textit{n}. There are k different values for \textit{B} and for each of these some distance to the k different values for \textit{B'}. This gives ac collection of distances \textit{D} of size $k^2$ where $\forall{}\textit{d}\in{}\textit{D}$ $0\leq{}d\leq{}k-1$. As such \textit{$d'_B$} can be formalized as:
+The expected euclidean distance \textit{$d'_B$} from B to the bitstring inserted by \qsr{} can be described as the distance from B to some random bitstring \textit{B'} with the same length \textit{n}. There are k different values for \textit{B} and for each of these some distance to the k different values for \textit{B'}. This gives a collection of distances \textit{D} of size $k^2$ where $\forall{}_{\textit{d}\in{}\textit{D}}$ $0\leq{}d\leq{}k-1$. As such \textit{$d'_B$} can be formalized as:
 \\
 $$E[\textit{$d'_B$}] = \sum_{d\in\textit{D}}^{}\dfrac{d}{k^2}$$
 \\
-Replacing removed bits with 0 will always guarantee the same expected average distance to an arbitrary value. However for \qsr{} the introduction of random bit replacement chooses any value in \textit{r}. Values between 0 and k-1 has a lower average distance to some random value, than the boundary values of 0 and k-1. Hence E[\textit{$d'_B$}] $\leq{}$ E[\textit{$d_B$}].
+Replacing removed bits with 0 will always guarantee the same expected distance to an arbitrary value. However for \qsr{} the introduction of random bit replacement chooses any value in \textit{r}. Values between 0 and k-1 has a lower average distance to some random value, than the boundary values of 0 and k-1. Hence E[\textit{$d'_B$}] $<$ E[\textit{$d_B$}].

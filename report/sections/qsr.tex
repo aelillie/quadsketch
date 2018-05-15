@@ -1,11 +1,10 @@
-\section{Modification of the \qs{} long edge representation}
+\section{Modification of the \qs{} decompression}
 \label{qsr}
 \subsection{\qsr{}}
-
-An implementation of \qs{} with a modified approach to representing insignificant bits for a node in the \qt{} has been implemented in \texttt{qsr.cpp} and is called \qsr{}. Section \ref{finding_improvements} described the method for getting to this, and this section will properly introduce the extension to the algorithm and why it should yield practical improvements in some scenarios.
+An implementation of \qs{} with a modified approach to represent insignificant bits for a node in the \qt{} has been implemented in \texttt{qsr.cpp}. Section \ref{finding_improvements} described the method for obtaining this, and this section will properly introduce the extension to the algorithm and why it should yield practical improvements in some scenarios.
 \\
 \\
-This experiment focuses on the pruning step of the algorithm. Recall that in the pruning step \qs{} shifts each point in a quad towards the lower left corner by replacing existing bits with zero's. The alteration introduced in this experiment moves each point in a quad towards a random corner of that quad. More precisely, by not only introducing zero's into the bit string as replacement, this feature insert bits into the bit string at random. The modification in the implementation is subtle and is illustrated in listing \ref{lst:qsr} below, which is extracted from lines 91-99 in \texttt{qsr.cpp}:
+This experiment focuses on the pruning step for long edges in the source code. Recall that \qs{} shifts each point in a quad towards the lower left corner by replacing existing bits with zeros. The alteration introduced in this experiment moves each point in a quad towards a random corner in that quad. More precisely, by not only introducing zeros into the bit string as replacement, this feature inserts random bits into the bit string. The modification in the implementation is subtle and is illustrated in listing \ref{lst:qsr} below, which is extracted from lines 91-99 in \texttt{qsr.cpp}:
 
 \begin{lstlisting}[caption={Pruning with random bits},label={lst:qsr}]
 if (long_edge_length >= lambda && parts.size() == 1)
@@ -19,26 +18,28 @@ if (long_edge_length >= lambda && parts.size() == 1)
 new_p[j] += 1.0 / (2.0 * (1 << depth));
 \end{lstlisting}
 
-This will for each dimension of a node that is pruned, insert a bit at random, or else continue as in the original implementation. This might improve the resulting sketch by "pulling" the point in an arbitrary direction for each dimension rather than only distorting them in one direction. This could potentially improve some scenarios of the sketch where the points are either. A visualization of this can be seen on figure \ref{fig:randombits}, where the transformation by \qs{} is referred to as QS, and the transformation by \qsr{} is referred to as QSR. In the graphical representation each point lies next to each other if they are placed in the same corner, where in the actual transformation these will have the exact same coordinates. 
+This will for each dimension of a node that is pruned, insert a random bit. This might improve the resulting sketch by "pulling" the point in an arbitrary direction for each dimension rather than only distorting them in one direction. This could improve the preservation of distances between points within a quad. A visualization of this can be seen on figure \ref{fig:randombits}, where the transformation by \qs{} is referred to as QS. In the graphical representation each point lies next to each other if they are placed in the same corner, where in the actual transformation these will have the exact same coordinates. 
 \begin{figure}[h]
 	\includegraphics[width=1\textwidth]{figures/randombits}
 	\caption{Random Bit Demonstration}
 	\label{fig:randombits}
 \end{figure}
-The given example in figure \ref{fig:randombits} demonstrates a scenario where the experiment performs decently. It should be noted that the random movement of the points could also result in a worse representation. Such a scenario is discussed in \ref{disc/threats/randomness}.
+The given example in figure \ref{fig:randombits} demonstrates a scenario where \qsr{} performs decently. It should be noted that the random movement of the points could also result in a worse representation. Such a scenario is discussed in \ref{disc/threats/randomness}.
 \\
 \\
-The motivation of this experiment stems from the creation of the random quad tree in \qs{}. Should the creation of this \qt{} accidentally quad through closely clustered points then the distortion could be quite severe. By introducing randomness into the direction of the points, they might end up in corners closer to each other and thereby reduce the amount of distortion.
+The motivation behind this experiment stems from the creation of the randomly shifted hypercube in \qs{}. Should the creation of the \qt{} accidentally quad through closely clustered points then the distortion could be quite severe. By introducing randomness into the direction of the points, they might end up in corners closer to each other and thereby reduce the amount of distortion.
 
 \subsection{Expected Distance}
 \label{exp:dist}
-Consider some bitstring \textit{B} of length \textit{n} which has been removed by \qs{} pruning for one dimension. Consider \textit{k} = $2^n$. Let the range \textit{r} of \textit{B} be defined as 0 to k-1. The expected euclidean distance \textit{$d_B$} from the bitstring of zero's inserted by \qs{} to \textit{B} can be formalized as\footnote{\url{https://en.wikipedia.org/wiki/Expected_value\#Finite_case}}:
+This sections provides a proof of \qsr{} having a lower expected distance distortion of pruned points than \qs{}. 
+
+Consider some bit string \textit{B} of length \textit{n} which has been removed by \qs{} pruning for one dimension. Consider \textit{k} = $2^n$. Let the range \textit{r} of \textit{B} be defined as 0 to k-1. The expected Euclidean distance \textit{$d_B$} from the bit string of zero's inserted by \qs{} to \textit{B} can be formalized as\footnote{\url{https://en.wikipedia.org/wiki/Expected_value\#Finite_case}}:
 \\
 $$E[\textit{$d_B$}] = \sum_{i=0}^{k - 1} \dfrac{i}{k}$$
 \\
 %\textit{$d_B$} can as such be reduced to $\dfrac{k-1}{2}$
-The expected euclidean distance \textit{$d'_B$} from B to the bitstring inserted by \qsr{} can be described as the distance from B to some random bitstring \textit{B'} with the same length \textit{n}. There are k different values for \textit{B} and for each of these some distance to the k different values for \textit{B'}. This gives a collection of distances \textit{D} of size $k^2$ where $\forall{}_{\textit{d}\in{}\textit{D}}$ $0\leq{}d\leq{}k-1$. As such \textit{$d'_B$} can be formalized as:
+The expected Euclidean distance \textit{$d'_B$} from B to the bit string inserted by \qsr{} can be described as the distance from B to some random bit string \textit{B'} with the same length \textit{n}. There are k different values for \textit{B} and for each of these some distance to the k different values for \textit{B'}. This gives a collection of distances \textit{D} of size $k^2$ where $\forall{}_{\textit{d}\in{}\textit{D}}$ $0\leq{}d\leq{}k-1$. As such \textit{$d'_B$} can be formalized as:
 \\
 $$E[\textit{$d'_B$}] = \sum_{d\in\textit{D}}^{}\dfrac{d}{k^2}$$
 \\
-Replacing removed bits with 0 will always guarantee the same expected distance to an arbitrary value. However for \qsr{} the introduction of random bit replacement chooses any value in \textit{r}. Values between 0 and k-1 has a lower average distance to some random value, than the boundary values of 0 and k-1. Hence E[\textit{$d'_B$}] $<$ E[\textit{$d_B$}].
+Replacing removed bits with 0 will always guarantee the same expected distance to an arbitrary value. However for \qsr{} the introduction of random bit replacement chooses any value in \textit{r}. Values between 0 and k-1 has a lower average distance to some random value, than the boundary values of 0 and k-1. Hence E[\textit{$d'_B$}] $<$ E[\textit{$d_B$}], where $n>1$.

@@ -60,6 +60,7 @@ Due to the size of the research area, described in \ref{research_area}, a huge a
 %TODO: Write which papers are related
 
 \subsubsection{\textit{Product Quantization}}
+\label{sec:pq}
 The \pq{} concept is stated in the abstract of the original paper as such: \textit{This paper introduces a product quantization based approach for approximate nearest neighbor search. The idea is to decompose}[..] \textit{the space into a Cartesian product of low dimensional subspaces and to quantize each subspace separately}. Specifically the algorithm uses \textit{vector quantization} as the approach to compress data, mapping a real valued vector, \textit{x}, in \textit{D}-dimensional space to \textit{centroid} representations, \textit{$c_i$}, in a set $\mathcal{V}_i$\cite[p.3 II-A]{schmid9}. The set of vectors mapped with the quantizer function \textit{q} to a given index \textit{i} is referred to as a (Voronoi) \textit{cell}, and defined as:
 
 \begin{equation}

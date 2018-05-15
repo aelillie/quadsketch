@@ -14,6 +14,19 @@ Randomly shifting a hypercube in each dimension is necessary for the \qs{} imple
 \\
 If the dataset is of a known format, randomly shifting it in each dimension could turn out to be less effective than taking a more specific approach. An example could be a dataset in which all the points are very close to each other. A large amount of the points might end up in the same leaves and as such defeat the purpose of using the \qt{} to begin with. Randomly shifting over these points will not be of any significant gain to the problem at hand.
 
+\subsubsection{Aspect ratio}
+\label{sec:aspect_ratio}
+The aspect ratio is defined as the ratio between the largest and smallest distance between points in the dataset\cite{wagner17}. The aspect ratio is denoted as $\Phi$:
+\\
+\\
+$$ \Phi = \frac{max_{1<i<j<n} || x_i - x_j || }{min_{1<i<j<n} || x_i - x_j || } $$
+\\
+\\
+The aspect ratio can be used to gain insight about the distribution of data points in euclidean space. When $\Phi$ approaches 1 then points are clustered close together. When $\Phi$ grows then the points are more spread out in the point space but will not describe how the points are spread. There could be an outlier which gives a big $\Phi$. If some point set p is distributed in a euclidean space, the quad sketch will need more bits to precisely describe the position of points in p. Hence $\Phi$ has an impact on how the parameters $\Lambda$ and $\L$ should be set to dictate the guarantees of the sketch.
+\\
+\\
+When $\Phi$ grows, so does the required value for both $\Lambda$ and $\L$ if the guarantees given in the theorems are to hold. A large aspect ratio describes a point set in which at least one point is far from the other points relative to the distance between the other points. This results in a need to store more information in order to retain the relative distances between the points in the sketch.
+
 \subsection{Theorems}
 The paper introduces three theorems, where \tm{1} is the main theorem covering the basic variant of \qs{}. \tm{2} covers a variant which focuses on minimizing the distortion between all points, and \tm{3} introduces a block variant of \tm{1} inspired by \cite{schmid9}.
 \\

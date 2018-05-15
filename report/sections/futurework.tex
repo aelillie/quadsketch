@@ -2,7 +2,7 @@
 \label{futurework}
 This section will discuss future work, which can be carried out as an extension to this paper and to \cite{wagner17}. Contributions will be briefly introduced and their main obstacles described. 
 
-\subsection{Dynamic Addition}
+\subsection{Dynamic Insertion}
 Through the creation of this project some discussions has taken place regarding the possibilities of dynamically adding new points to a complete sketch. The algorithm introduced in \cite{wagner17} only considers computing a sketch from a static dataset and adding a new point to an existing sketch would therefore require a complete recomputation. Constructing the sketch is a very expensive operation, especially for datasets with many dimensions and a high aspect ratio, as these require a larger tree to obtain appropriate metrics. The construction time limits the applications of \qs{}. The ability to dynamically add points would allow for \qs{} to be used in other areas such as for instance streaming. Here compact distance preserving sketches are desirable because the amount of memory is limited, and thus many geometric computations are  challenging \cite{ShanM}. As such, the ability to dynamically add new points would be a valuable contribution. 
 
 \subsection{Automatic Parameters}

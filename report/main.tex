@@ -83,8 +83,7 @@
 \end{titlepage}
 
 \begin{abstract}
-This paper analyzes, experiment, and verifies the relatively new algorithm \qs{} proposed in \cite{wagner17} and makes a contribution by modifying the pruning/decompression step of \qs{}. A baseline algorithm has been implemented to properly verify the experiments and results from \cite{wagner17}, and shows \qs{} outperforms the baseline algorithm as presented in \cite{wagner17}. Experiments compared the performance of \qs{} against the modified algorithm \qsr{}. The experiments showed a better average case performance of \qsr{} in regards to accuracy and distortion over \qs{}. Furthermore there is given a theoretical proof of \qsr{} giving a better expected distance perseverance than \qs{}. 
-  \dots Furthermore \qs{} has been tested on a new type of data set, "NAME", which reveals that \dots
+This paper analyzes, experiments, and verifies the relatively new algorithm \qs{} proposed in \cite{wagner17} and makes a contribution by modifying the decompression step of \qs{}, inserting random bits instead of zeros. A baseline algorithm has been implemented, which verifies the results from \cite{wagner17} on \sift{} and \mnist{} datasets. Additional experiments have been performed on \gist{} and a synthetic dataset, \clust{}. Experiments compare the performance of \qs{} against the modified algorithm, named \qsr{}. The experiments shows a better average case performance of \qsr{} in regards to accuracy and distortion over \qs{}, in particular on \mnist{}. Finally a theoretical proof of \qsr{} is given, showing a better expected distance preservation than \qs{}. 
 \end{abstract}
 \clearpage
 
